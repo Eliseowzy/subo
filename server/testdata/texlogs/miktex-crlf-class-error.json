@@ -1,0 +1,19 @@
+{
+  "issues": [
+    {
+      "id": "1db7db41db772a8b-0",
+      "level": "error",
+      "kind": "package",
+      "message": "Class ctexart Error: Support package `expl3' too old.",
+      "here": "...or:nnn { ctex } { l3-too-old } { expl3 } }⟨here⟩",
+      "source": "ctexart",
+      "logRange": [
+        9,
+        16
+      ]
+    }
+  ],
+  "errors": 1,
+  "warnings": 0,
+  "boxes": 0
+}

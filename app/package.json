@@ -1,0 +1,38 @@
+{
+  "name": "subo-app",
+  "private": true,
+  "version": "0.0.3",
+  "type": "module",
+  "scripts": {
+    "sync:pdfjs": "cp -R node_modules/pdfjs-dist/cmaps public/ && cp -R node_modules/pdfjs-dist/standard_fonts public/",
+    "predev": "npm run sync:pdfjs",
+    "prebuild": "npm run sync:pdfjs",
+    "dev": "vite",
+    "build": "tsc --noEmit && npm run check:i18n && npm run licenses && vite build",
+    "preview": "vite preview",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "licenses": "node scripts/gen-licenses.mjs"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.20.3",
+    "@codemirror/commands": "^6.7.1",
+    "@codemirror/lang-markdown": "^6.5.2",
+    "@codemirror/language": "^6.10.8",
+    "@codemirror/legacy-modes": "^6.4.2",
+    "@codemirror/search": "^6.7.2",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.36.1",
+    "dompurify": "^3.4.17",
+    "marked": "^15.0.12",
+    "pdfjs-dist": "^4.10.38",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.14"
+  }
+}

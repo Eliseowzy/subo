@@ -1,0 +1,43 @@
+{
+  "issues": [
+    {
+      "id": "3d8dabe2e0576543-0",
+      "level": "error",
+      "kind": "driver",
+      "message": "Cannot proceed without .vf or \"physical\" font for PDF output...",
+      "logRange": [
+        9,
+        9
+      ]
+    },
+    {
+      "id": "1d51dd9c7d624775-0",
+      "level": "warning",
+      "kind": "missingChar",
+      "message": "There is no 字 (U+5B57) in font [lmroman10-regular]:mapping=tex-text;!",
+      "file": "main.tex",
+      "source": "lmroman10-regular",
+      "key": "字 (U+5B57)",
+      "logRange": [
+        5,
+        5
+      ]
+    },
+    {
+      "id": "1f223865d3be8969-0",
+      "level": "warning",
+      "kind": "missingChar",
+      "message": "There is no ( (U+FF08) in font [lmroman10-regular]:mapping=tex-text;!",
+      "file": "main.tex",
+      "source": "lmroman10-regular",
+      "key": "( (U+FF08)",
+      "logRange": [
+        7,
+        7
+      ]
+    }
+  ],
+  "errors": 1,
+  "warnings": 2,
+  "boxes": 0
+}

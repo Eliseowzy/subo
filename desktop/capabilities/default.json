@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "页面由本地服务经 HTTP 提供，不调用 Tauri IPC；原生能力（选文件夹等）都在 Rust 侧",
+  "windows": [],
+  "permissions": []
+}

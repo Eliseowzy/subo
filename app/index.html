@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>素帛 Subo</title>
+    <script>
+      // 首帧前定好主题，免得深色用户先看到一闪白屏；逻辑与 src/ui.tsx 一致。
+      // 语言同理先把 lang 设上（影响中日韩字形回退），完整的选择逻辑在 src/i18n
+      try {
+        var t = localStorage.getItem("subo.theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+        var l = localStorage.getItem("subo.locale");
+        if (l) document.documentElement.lang = l;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

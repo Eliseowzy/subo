@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- biber 是 PAR 打包的 Perl 程序，运行时把 XS 动态库解到临时目录再加载，这些库没有我们的签名。
+     开了 hardened runtime（公证要求）后库校验会拦下它们，只给 biber 关掉库校验 -->
+<plist version="1.0">
+<dict>
+  <key>com.apple.security.cs.disable-library-validation</key>
+  <true/>
+</dict>
+</plist>

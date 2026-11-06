@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- 并入 Tauri 生成的 Info.plist。声明本地化后，菜单栏上的应用名、Finder 里的名字、
+     系统对话框按系统语言显示：中文系统是「素帛」，其他是 Subo（见 macos/*.lproj） -->
+<plist version="1.0">
+<dict>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>en</string>
+  <key>CFBundleLocalizations</key>
+  <array>
+    <string>en</string>
+    <string>zh-Hans</string>
+    <string>zh-Hant</string>
+  </array>
+  <key>LSHasLocalizedDisplayName</key>
+  <true/>
+</dict>
+</plist>

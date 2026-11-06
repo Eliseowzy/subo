@@ -1,0 +1,24 @@
+(/opt/.texlive/texmf-dist
+/tex/xelatex/xecjk/xeCJK.cfg
+File: xeCJK.cfg 2026/08/21 v3.10.6 Configuration file for xeCJK package
+))
+
+./main.tex:4: Package fontspec Error: 
+(fontspec)                The font "FZShuSong-Z01 Not Here" cannot be found;
+(fontspec)                this may be but usually is not a fontspec bug.
+(fontspec)                Either there is a typo in the font name/file, the
+(fontspec)                font is not installed (correctly), or there is a
+(fontspec)                bug in the underlying font loading engine
+(fontspec)                (XeTeX/luaotfload).
+
+For immediate help type H <return>.
+ ...                                              
+                                                  
+l.4 \begin
+          {document}你好\end{document}
+
+A font might not be found for many reasons.
+ Check the spelling, where the font is installed etc. etc.
+
+ When in doubt, ask someone for help!
+

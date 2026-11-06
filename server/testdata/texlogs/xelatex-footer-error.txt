@@ -1,0 +1,41 @@
+== xelatex 第 1 遍
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2024-06-01> patch level 2
+L3 programming layer <2024-05-27>
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2024/02/08 v1.4n Standard LaTeX document class
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/size10.clo))
+(/usr/local/texlive/2024/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/l3backend/l3backend-xetex.def)
+No file main.aux.
+(./chapters/intro.tex
+
+LaTeX Warning: Reference `fig:arch' on page 1 undefined on input line 12.
+
+
+Overfull \hbox (23.4pt too wide) in paragraph at lines 18--19
+[]\TU/lmtt/m/n/10 a_really_long_identifier(without_breaks|
+
+)
+./main.tex:9: Missing number, treated as zero.
+<to be read again> 
+                   \hfil 
+<argument> ...color \hb@xt@ \textwidth {\@thefoot 
+                                                  }\color@endbox 
+\@outputpage ...twidth {\@thefoot }\color@endbox }
+                                                   \pdfannot@link@on@@ } } \...
+\@opcol ...te@singlecol@structures@@ \@outputpage 
+                                                  \fi \global \@mparbottom \...
+<output> ...specialoutput \else \@makecol \@opcol 
+                                                  \@startcolumn \@whilesw \i...
+\enddocument ...t \@checkend {document}\clearpage 
+                                                  \@kernel@before@enddocumen...
+l.9 \end{document}
+                  
+Here is how much of TeX's memory you used:
+ 3870 strings out of 474773
+No pages of output.
+Transcript written on /tmp/press/main.log.

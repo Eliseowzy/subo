@@ -1,0 +1,30 @@
+{
+  "issues": [
+    {
+      "id": "7bf1ce17a63f4798-0",
+      "level": "warning",
+      "kind": "bib",
+      "message": "Cannot find 'refs.bib'!",
+      "source": "biber",
+      "logRange": [
+        14,
+        14
+      ]
+    },
+    {
+      "id": "63e63b6ec881d783-0",
+      "level": "warning",
+      "kind": "undefinedCite",
+      "message": "The following entry could not be found in the database: smith2020 Please verify the spelling and rerun LaTeX afterwards.",
+      "source": "biblatex",
+      "key": "smith2020",
+      "logRange": [
+        21,
+        25
+      ]
+    }
+  ],
+  "errors": 0,
+  "warnings": 2,
+  "boxes": 0
+}

@@ -1,0 +1,13 @@
+{
+  "name": "subo-desktop",
+  "private": true,
+  "version": "0.0.3",
+  "scripts": {
+    "tauri": "tauri",
+    "build": "tauri build",
+    "icons": "tauri icon ../docs/brand/subo-icon-1024.png --output icons && rm -rf icons/android icons/ios && tauri icon ../docs/brand/subo-icon.svg --output icons/.win && cp icons/.win/icon.ico icons/.win/Square*Logo.png icons/.win/StoreLogo.png icons/ && rm -rf icons/.win"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "issues": [
+    {
+      "id": "4704cf2ec7339d7c-0",
+      "level": "error",
+      "kind": "here",
+      "message": "Environment tabularx undefined, which happens when the package is missing.",
+      "file": "chapters/results.tex",
+      "line": 27,
+      "here": "\\begin{tabularx}⟨here⟩{\\linewidth}{lX}",
+      "logRange": [
+        7,
+        15
+      ]
+    }
+  ],
+  "errors": 1,
+  "warnings": 0,
+  "boxes": 0
+}

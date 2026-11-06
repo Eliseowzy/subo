@@ -1,0 +1,204 @@
+% ---------------------------------------------------------------------------
+%  中文幻灯片：16:9
+%  只用 beamer 自带的主题机制，不额外装主题包；中文字体用系统自带的。
+%  标题页、章节过渡页、要点页、对比页、数字页、引用页、结尾页各有一个示例，
+%  复制需要的那一页改内容即可。\pause 可以分步显示。
+%  这份示例讲的是「素帛 Subo」这个工具背后的想法。
+% ---------------------------------------------------------------------------
+\documentclass[aspectratio=169,12pt]{ctexbeamer}
+
+\setsansfont{texgyreheros}[
+  Extension=.otf, UprightFont=*-regular, ItalicFont=*-italic,
+  BoldFont=*-bold, BoldItalicFont=*-bolditalic]
+\usepackage{booktabs}
+\usepackage{tikz}
+
+% ---------------------------------------------------------------- 配色
+% 墨色做结构，绿色是唯一的强调，琥珀色只在「出问题」时出现
+\definecolor{ink}{HTML}{1F3A33}
+\definecolor{accent}{HTML}{2F7D63}
+\definecolor{leaf}{HTML}{6FCF9F}
+\definecolor{amber}{HTML}{E0A63A}
+\definecolor{mist}{HTML}{75837E}
+\definecolor{paper}{HTML}{F4F7F5}
+\definecolor{snow}{HTML}{F7F8F7}
+
+% 斜杠加一个点；深底上用 \subomark*（反白）
+\NewDocumentCommand{\subomark}{s O{1em}}{{%
+  \IfBooleanTF{#1}{\colorlet{slash}{snow}\colorlet{dot}{leaf}}{\colorlet{slash}{ink}\colorlet{dot}{accent}}%
+  \tikz[x=#2/120, y=#2/120, baseline=-.1*#2]{%
+    \draw[slash, line width=12*#2/120, line cap=round] (36,90) -- (62,32);
+    \fill[dot] (82,34) circle (8);}}}
+
+% ---------------------------------------------------------------- 主题
+\usetheme{default}
+\setbeamercolor{normal text}{fg=ink}
+\setbeamercolor{structure}{fg=accent}
+\setbeamercolor{frametitle}{fg=ink}
+\setbeamercolor{alerted text}{fg=accent}
+\setbeamerfont{frametitle}{series=\bfseries, size=\Large}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}{\color{accent}\rule[.3ex]{4pt}{4pt}}
+\setbeamertemplate{enumerate items}{\color{accent}\bfseries\insertenumlabel}
+\setbeamersize{text margin left=1.4cm, text margin right=1.4cm}
+
+\setbeamertemplate{frametitle}{%
+  \vspace*{.9cm}{\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle}\par
+  \ifx\insertframesubtitle\empty\else{\small\color{mist}\insertframesubtitle}\fi\vspace{.3cm}}
+
+% 页脚：左边标志与题目，右边页码
+\setbeamertemplate{footline}{%
+  \hspace{1.4cm}{\subomark[.8em]}\hspace{.5em}{\tiny\color{mist}\inserttitle}%
+  \hfill{\tiny\color{mist}\insertframenumber\,/\,\inserttotalframenumber}\hspace{1.4cm}\vspace{.5cm}}
+
+% 章节过渡页：深色整页，大号章节名
+\AtBeginSection{%
+  {\setbeamercolor{background canvas}{bg=ink}
+   \setbeamertemplate{footline}{}
+   \begin{frame}[plain]
+     \vfill
+     {\color{leaf}\small\bfseries 第\,\thesection\,部分}\par\vspace{6pt}
+     {\color{snow}\fontsize{30}{36}\selectfont\bfseries\insertsectionhead}\par
+     \vfill
+     \hfill\subomark*[2em]
+   \end{frame}}}
+
+% 大数字：\bignum{数字}{说明}
+\newcommand{\bignum}[2]{%
+  \begin{minipage}[t]{.31\linewidth}
+    {\fontsize{32}{38}\selectfont\bfseries\color{accent}#1}\par\vspace{4pt}
+    {\small\color{mist}#2}
+  \end{minipage}}
+
+\title{两笔，不能再少}
+\subtitle{一个离线 \LaTeX{} 工作台的设计取舍}
+\author{陈默}
+\institute{素帛 Subo}
+\date{2026 年 10 月}
+
+\begin{document}
+
+% ---------------------------------------------------------------- 标题页
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[paper] (current page.north east) rectangle ([xshift=-5.2cm]current page.south east);
+    \node at ([xshift=-2.6cm]current page.east) {\subomark[5.5em]};
+  \end{tikzpicture}
+  \vspace{1.6cm}
+  {\small\color{accent}\bfseries\insertinstitute\quad\textperiodcentered\quad\insertdate}\par
+  \vspace{.4cm}
+  {\fontsize{34}{40}\selectfont\bfseries\inserttitle}\par
+  \vspace{.3cm}
+  {\large\color{mist}\insertsubtitle}\par
+  \vspace{1.4cm}
+  {\small\insertauthor}
+\end{frame}}
+
+% ---------------------------------------------------------------- 引子
+\begin{frame}{一个熟悉的下午}
+  \begin{itemize}\setlength{\itemsep}{.5em}
+    \item 为了改一页简历，先下载 4\,GB 的发行版\pause
+    \item 装好以后，编辑器还要再装五个插件\pause
+    \item 换到云端编辑器，网速一慢，编译就开始排队
+  \end{itemize}
+  \vspace{.8cm}
+  \pause
+  {\large 写作的人想要的，只是\alert{打开就写，写完就有 PDF}。}
+\end{frame}
+
+\section{减法}
+
+\begin{frame}{只带最小够用的那一部分}{完整发行版里的大部分东西，绝大多数人一辈子用不到}
+  \begin{columns}[T]
+    \begin{column}{.48\textwidth}
+      \textbf{内置}
+      \begin{itemize}
+        \item 期刊、学位论文、简历模板里最常用的宏包
+        \item 一个编译引擎：Xe\LaTeX{}
+        \item 预置模板，只带源码
+      \end{itemize}
+    \end{column}
+    \begin{column}{.48\textwidth}
+      {\color{mist}\textbf{不内置}}
+      \begin{itemize}
+        \item[{\color{mist}\rule[.3ex]{4pt}{4pt}}] {\color{mist}冷门宏包：用到时再装}
+        \item[{\color{mist}\rule[.3ex]{4pt}{4pt}}] {\color{mist}中文字体：用系统自带的}
+        \item[{\color{mist}\rule[.3ex]{4pt}{4pt}}] {\color{mist}网络：编译从不需要它}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{结果}
+  \vspace{.4cm}
+  \bignum{220\,MB}{安装包大小\\完整发行版约 8\,GB}\hfill
+  \bignum{0}{编译所需的网络请求\\文档与编译都在本机}\hfill
+  \bignum{1}{补齐缺包要点几下\\缺字清单，一键安装}
+\end{frame}
+
+\section{按需}
+
+\begin{frame}{缺什么，补什么}{编译失败不该是一段看不懂的日志}
+  \centering
+  \begin{tikzpicture}[node distance=3.3cm, every node/.style={font=\small},
+      box/.style={draw=accent, line width=.8pt, fill=paper, rounded corners=3pt,
+                  minimum width=2.6cm, minimum height=1.1cm, align=center}]
+    \node[box] (a) {打开文档\\即编译};
+    \node[box, right of=a, draw=amber, fill=amber!8] (b) {发现缺包\\列成清单};
+    \node[box, right of=b] (c) {一键安装\\自动重编};
+    \node[box, right of=c, fill=accent, text=white] (d) {得到 PDF};
+    \draw[->, accent, line width=.8pt] (a) -- (b);
+    \draw[->, accent, line width=.8pt] (b) -- (c);
+    \draw[->, accent, line width=.8pt] (c) -- (d);
+  \end{tikzpicture}
+  \vspace{.8cm}
+
+  \raggedright
+  琥珀色只出现在一个地方：\alert{出了问题，而且告诉你怎么办}。
+\end{frame}
+
+\begin{frame}{取舍}
+  \centering
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{@{}l l l@{}}
+    \toprule
+    \textbf{问题} & \textbf{我们的选择} & \textbf{代价} \\
+    \midrule
+    宏包放多少 & 按真实模板的使用频率 & 冷门宏包第一次要联网 \\
+    字体怎么办 & 用系统自带的         & 不同电脑字形略有差异 \\
+    支持几个引擎 & 只有 Xe\LaTeX{}    & 少数 pdf\LaTeX{} 专用写法要改 \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+\section{安静}
+
+\begin{frame}[plain]
+  \vfill
+  \begin{center}
+    \begin{minipage}{.72\linewidth}
+      {\fontsize{22}{32}\selectfont 好的工具应当安静。\\
+        它不抢你的注意力，\\只在你需要的时候出现。\par}
+      \vspace{.6cm}
+
+      {\small\color{mist}——\,素帛是未染的白绢，字落上去之前，它什么也不说}
+    \end{minipage}
+  \end{center}
+  \vfill
+\end{frame}
+
+% ---------------------------------------------------------------- 结尾
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \vfill
+  \centering
+  \subomark[4em]\par
+  \vspace{.8cm}
+  {\fontsize{26}{32}\selectfont\bfseries 素帛，让灵感更自由。}\par
+  \vspace{.4cm}
+  {\small\color{mist}谢谢}
+  \vfill
+\end{frame}}
+
+\end{document}

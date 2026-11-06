@@ -1,0 +1,16 @@
+== pdflatex 第 1 遍
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex)
+(./main.tex
+LaTeX2e <2024-06-01> patch level 2
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/article.cls)
+(./chapters/results.tex
+./chapters/results.tex:27: LaTeX Error: Environment tabularx undefined, which h
+appens when the package is missing.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.27 \begin{tabularx}
+                      {\linewidth}{lX}
+./chapters/results.tex:27:  ==> Fatal error occurred, no output PDF file produced!

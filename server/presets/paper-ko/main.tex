@@ -1,0 +1,100 @@
+% !TEX program = xelatex
+% ---------------------------------------------------------------------------
+%  한국어 논문
+%  XeLaTeX + xetexko. 한글은 은바탕·은돋움(unfonts-core), 영문은 Latin Modern.
+%  참고문헌은 BibTeX(refs.bib). 은글꼴은 처음 컴파일할 때 내려받아 추가한다(약 15 MB).
+%  연구 내용·수치·저자는 모두 예시이므로 자신의 내용으로 바꾸어 쓴다.
+% ---------------------------------------------------------------------------
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[hangul]{xetexko} % hangul: 요약·그림·표·참고 문헌 같은 한국어 제목, 한글 조판용 줄 간격
+% 글꼴은 파일 이름으로 지정한다. 없으면 오류가 나서 빠진 글꼴을 알 수 있다
+% (아무것도 지정하지 않으면 xetexko 는 은글꼴이 없을 때 오류 없이 넘어가 한글이 비어 나온다)
+\setmainhangulfont{UnBatang.ttf}[BoldFont=UnBatangBold.ttf,ItalicFont=UnBatang.ttf,BoldItalicFont=UnBatangBold.ttf] % 한글엔 이탤릭이 없다
+\setsanshangulfont{UnDotum.ttf}[BoldFont=UnDotumBold.ttf]
+\setmonohangulfont{UnDotum.ttf}
+
+\usepackage[margin=25mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+\title{딥러닝을 이용한 손글씨 수식 인식의 정확도 향상에 관한 연구}
+\author{김철수\thanks{○○대학교 대학원 컴퓨터공학과} \and 이영희\thanks{위와 같음}}
+\date{2026년 10월 27일}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  본 연구에서는 손글씨 수식 이미지로부터 \LaTeX{} 코드를 생성하는 방법을 제안한다.
+  기존 방법은 긴 수식에서 구조를 잘못 인식하는 문제가 있었다.
+  이를 해결하기 위해 트리 구조를 고려한 디코더를 도입하여 인식 정확도를 개선하였다.
+  공개 데이터셋을 이용한 평가 실험 결과, 제안 방법은 기존 방법보다
+  완전 일치율을 4.2\%p 높였다.
+
+  \medskip
+  \noindent\textbf{주제어:} 손글씨 수식 인식, 딥러닝, 시퀀스 변환
+\end{abstract}
+
+\section{서론}
+수식은 과학기술 문서에서 없어서는 안 될 요소이다.
+그러나 손으로 쓴 수식을 디지털화하는 작업은 여전히 부담이 크다\cite{zhang2017}.
+이 논문의 기여는 다음과 같다.
+\begin{itemize}
+  \item 트리 구조를 고려한 디코더 제안
+  \item 대규모 데이터셋에서의 유효성 검증
+\end{itemize}
+
+\section{관련 연구}
+시퀀스 변환 모델에 기반한 방법으로는 어텐션 메커니즘을 사용한 모델이 널리 쓰인다\cite{vaswani2017}.
+
+\section{제안 방법}
+입력 이미지 $\mathbf{X}$에 대해 출력 시퀀스 $\mathbf{y} = (y_1, \dots, y_T)$의 조건부 확률을
+식~\eqref{eq:prob}과 같이 모델링한다.
+\begin{equation}
+  p(\mathbf{y} \mid \mathbf{X}) = \prod_{t=1}^{T} p(y_t \mid y_{<t}, \mathbf{X})
+  \label{eq:prob}
+\end{equation}
+
+\begin{figure}[tb]
+  \centering
+  \fbox{\parbox[c][3cm][c]{0.6\linewidth}{\centering 여기에 그림 삽입}}
+  % \includegraphics[width=0.6\linewidth]{figure.pdf}
+  \caption{제안 방법의 개요}
+  \label{fig:overview}
+\end{figure}
+
+전체 구성은 그림~\ref{fig:overview}에 나타내었다.
+
+\section{평가 실험}
+실험 결과는 표~\ref{tab:result}와 같다.
+
+\begin{table}[tb]
+  \centering
+  \caption{완전 일치율 비교}
+  \label{tab:result}
+  \begin{tabular}{lc}
+    \toprule
+    방법 & 완전 일치율 (\%) \\
+    \midrule
+    기존 방법 A & 52.1 \\
+    기존 방법 B & 54.8 \\
+    제안 방법   & \textbf{59.0} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{결론}
+본 논문에서는 손글씨 수식 인식을 위한 새로운 방법을 제안하였다.
+향후 과제로는 여러 줄에 걸친 수식으로의 확장을 들 수 있다.
+
+\section*{사사}
+이 연구는 한국연구재단의 지원을 받아 수행되었다(과제번호 0000-0000).
+
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+\end{document}

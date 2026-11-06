@@ -1,0 +1,61 @@
+\chapter{实验与分析}
+\label{chap:experiment}
+
+\section{数据集}
+
+我们从新闻、科普、小说与技术文档四类来源中各选取 300 篇文章，
+每篇 3\,000～12\,000 字。312 位读者在三种行长、两种行距下阅读，
+每读完一篇回答五道理解题，并对疲劳程度打分（1～7）。
+
+\section{整体结果}
+
+表~\ref{tab:main} 比较了三种模型与人工评分的相关系数。
+加入版面负荷后，相关系数从 $0.69$ 提高到 $0.81$。
+
+\begin{table}[htbp]
+  \centering
+  \caption{不同模型与人工评分的相关系数}
+  \label{tab:main}
+  \begin{tabular}{@{}l c c c@{}}
+    \toprule
+    模型 & 新闻与科普 & 小说 & 技术文档 \\
+    \midrule
+    只用语言特征 & 0.71 & 0.66 & 0.70 \\
+    只用版面特征 & 0.38 & 0.45 & 0.31 \\
+    \textbf{二者融合（本文）} & \textbf{0.82} & \textbf{0.80} & \textbf{0.81} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{行长的影响}
+
+图~\ref{fig:fatigue} 给出了不同行长下读者自评的疲劳程度。
+行长在 20～26 字时疲劳最低；超过 34 字后，疲劳随行长近似线性上升。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=.8\linewidth, height=5.6cm,
+      xlabel={行长（字）}, ylabel={疲劳自评（1--7）},
+      xmin=12, xmax=46, ymin=2, ymax=5.6,
+      axis lines=left, axis line style={mist}, tick style={mist},
+      tick label style={font=\small}, label style={font=\small},
+      legend style={draw=none, font=\small, at={(0.03,0.97)}, anchor=north west},
+    ]
+      \addplot[accent, very thick, smooth, mark=*, mark size=1.6pt] coordinates
+        {(14,3.6) (18,3.0) (22,2.7) (26,2.8) (30,3.2) (34,3.7) (38,4.3) (42,4.9)};
+      \addlegendentry{行距 1.8}
+      \addplot[ink, very thick, smooth, dashed, mark=square*, mark size=1.4pt] coordinates
+        {(14,3.8) (18,3.3) (22,3.0) (26,3.2) (30,3.7) (34,4.3) (38,4.9) (42,5.4)};
+      \addlegendentry{行距 1.4}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{行长与疲劳程度}
+  \label{fig:fatigue}
+\end{figure}
+
+\section{小结}
+
+版面并非可读性的背景，而是它的一部分。对于技术文档这类信息密集的长文本，
+合适的行长与行距带来的改善，几乎与把文字改写得更通俗一样多。

@@ -1,0 +1,105 @@
+% ---------------------------------------------------------------------------
+%  One-page English resume
+%  Single column, real text (no tables for layout), so applicant tracking systems
+%  read it in order. Libertinus fonts and fontawesome5 icons are bundled.
+%  The person and experience are fictional. Rule of thumb for every bullet:
+%  verb, what you did, and the measurable result.
+% ---------------------------------------------------------------------------
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage[margin=.7in,top=.6in]{geometry}
+\usepackage{fontspec}
+\setmainfont{LibertinusSerif}[
+  Extension=.otf, UprightFont=*-Regular, ItalicFont=*-Italic,
+  BoldFont=*-Semibold, BoldItalicFont=*-SemiboldItalic]
+\setsansfont{LibertinusSans}[Extension=.otf, UprightFont=*-Regular, BoldFont=*-Bold]
+\setmonofont{SourceCodePro}[Extension=.otf, UprightFont=*-Regular, Scale=MatchLowercase]
+\usepackage{fontawesome5}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+% A dark neutral for structure, one green accent
+\definecolor{ink}{HTML}{1F3A33}
+\definecolor{accent}{HTML}{2F7D63}
+\definecolor{mist}{HTML}{75837E}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\linespread{1.08}
+\raggedright
+\setlist[itemize]{nosep, leftmargin=1.1em, topsep=3pt, itemsep=1.5pt,
+  label={\color{accent}\textbullet}}
+
+\titleformat{\section}{\sffamily\small\bfseries\color{accent}\addfontfeature{LetterSpace=12}}{}{0pt}{\MakeUppercase}[\vspace{-5pt}{\color{mist!40}\rule{\linewidth}{.4pt}}]
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+
+% \role{Organization}{Location}{Title}{Dates}
+\newcommand{\role}[4]{%
+  \par\vspace{4pt}
+  {\bfseries\color{ink}#1}\enspace{\small\color{mist}#2}\hfill{\small\color{mist}#4}\par
+  {\itshape #3}\par}
+
+\begin{document}
+
+% ---------------------------------------------------------------- header
+{\fontsize{26}{30}\selectfont\color{ink}Elena Marsh}\par
+\vspace{3pt}
+{\large\itshape\color{mist}Software engineer building tools for writing and typesetting}\par
+\vspace{7pt}
+{\small\color{ink}
+  \faEnvelope[regular]\,\href{mailto:elena.marsh@example.com}{elena.marsh@example.com}\quad
+  \faPhone*\,(555) 012-3456\quad
+  \faGithub\,\href{https://github.com/example}{github.com/example}\quad
+  \faLinkedin\,\href{https://linkedin.com/in/example}{linkedin.com/in/example}\quad
+  \faMapMarker*\,Portland, OR\par}
+
+% ---------------------------------------------------------------- experience
+\section{Experience}
+
+\role{Folio Labs}{Remote}{Senior Software Engineer, Document Engine}{2022 -- Present}
+\begin{itemize}
+  \item Rebuilt the paragraph layout engine in Rust and WebAssembly; a 300-page manuscript now
+        reflows in 0.4\,s instead of 9\,s, which made live preview possible.
+  \item Designed an offline-first sync model so writers keep working on planes and trains;
+        support tickets about lost edits fell from 40 a month to 2.
+  \item Led a team of four; introduced design reviews with writers in the room, which cut
+        rework on new features by roughly a third.
+\end{itemize}
+
+\role{Northwind Publishing}{Seattle, WA}{Software Engineer, Production Tools}{2019 -- 2022}
+\begin{itemize}
+  \item Automated the print pipeline from manuscript to press-ready PDF with \LaTeX{} and
+        Python, shortening production from three weeks to four days per title.
+  \item Built a style checker for 14 house styles; copy-editing passes dropped from three to one.
+\end{itemize}
+
+\role{Open Source}{}{Maintainer, \textup{\texttt{quietlint}}}{2020 -- Present}
+\begin{itemize}
+  \item A linter for prose in \LaTeX{} and Markdown documents: 3.1k stars, used by two
+        university presses and dozens of technical writing teams.
+\end{itemize}
+
+% ---------------------------------------------------------------- education
+\section{Education}
+
+\role{University of Washington}{Seattle, WA}{B.S. in Computer Science, minor in Book Arts}{2015 -- 2019}
+\begin{itemize}
+  \item Senior thesis: \emph{Measuring Comfort: Line Length and Fatigue in On-Screen Reading}.
+\end{itemize}
+
+% ---------------------------------------------------------------- skills
+\section{Skills}
+
+\textbf{Languages}\enspace Rust, TypeScript, Python, C, SQL\par
+\textbf{Systems}\enspace WebAssembly, CRDTs and offline sync, PDF internals, font shaping (HarfBuzz)\par
+\textbf{Typesetting}\enspace \LaTeX{}, OpenType features, Unicode line breaking, print production
+
+% ---------------------------------------------------------------- talks
+\section{Selected Talks}
+
+\textbf{The Page Is an Interface} \textendash\ \emph{Write the Docs}, Portland, 2024\par
+\textbf{Typesetting at the Speed of Typing} \textendash\ \emph{RustConf}, 2023
+
+\end{document}

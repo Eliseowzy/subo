@@ -1,0 +1,20 @@
+{
+  "issues": [
+    {
+      "id": "a5a29e957bb50084-0",
+      "level": "error",
+      "kind": "here",
+      "message": "Unicode character 汉 (U+6C49) not set up for use with LaTeX.",
+      "file": "main.tex",
+      "line": 3,
+      "here": "Plain text with 汉⟨here⟩字 in it.",
+      "logRange": [
+        15,
+        23
+      ]
+    }
+  ],
+  "errors": 1,
+  "warnings": 0,
+  "boxes": 0
+}

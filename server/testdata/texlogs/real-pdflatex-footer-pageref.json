@@ -1,0 +1,23 @@
+{
+  "issues": [
+    {
+      "id": "a46185e9e122308c-0",
+      "level": "error",
+      "kind": "end",
+      "message": "Missing \\endcsname inserted.",
+      "file": "main.tex",
+      "line": 7,
+      "here": "\\end{document}⟨here⟩",
+      "chain": [
+        "<to be read again> ⟨here⟩\\protect"
+      ],
+      "logRange": [
+        16,
+        20
+      ]
+    }
+  ],
+  "errors": 1,
+  "warnings": 0,
+  "boxes": 0
+}

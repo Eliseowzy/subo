@@ -1,0 +1,24 @@
+== pdflatex 第 1 遍
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-09-09>
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/l3kernel/l3backend-pdf
+tex.def)
+No file main.aux.
+)
+Runaway argument?
+{bold text that never closes. \par Next paragraph. \end {document} 
+! File ended while scanning use of \textbf .
+<inserted text> 
+                \par 
+<*> main.tex
+            
+!  ==> Fatal error occurred, no output PDF file produced!
+Transcript written on /tmp/subo-logwork/subo/cli/cad3d017b008675a/pdflatex/main
+.log.

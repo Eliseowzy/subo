@@ -1,0 +1,23 @@
+== pdflatex 第 1 遍
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-09-09>
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty)
+
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/l3kernel/l3backend-pdf
+tex.def)
+No file main.aux.
+./main.tex:7: Missing \endcsname inserted.
+<to be read again> 
+                   \protect 
+l.7 \end{document}
+                  
+./main.tex:7:  ==> Fatal error occurred, no output PDF file produced!
+Transcript written on /tmp/subo-logwork/subo/cli/660527f703b1e70a/pdflatex/main
+.log.

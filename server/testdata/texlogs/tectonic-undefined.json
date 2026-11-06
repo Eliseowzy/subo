@@ -1,0 +1,19 @@
+{
+  "issues": [
+    {
+      "id": "c964852e0de8f27d-0",
+      "level": "error",
+      "kind": "here",
+      "message": "Undefined control sequence",
+      "file": "main.tex",
+      "line": 5,
+      "logRange": [
+        2,
+        2
+      ]
+    }
+  ],
+  "errors": 1,
+  "warnings": 0,
+  "boxes": 0
+}

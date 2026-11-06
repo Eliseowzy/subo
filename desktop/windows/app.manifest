@@ -1,0 +1,22 @@
+<!-- Windows 应用清单，由 build.rs 编进 Subo.exe。在 tauri-build 默认清单（通用控件 6.0）上加长路径支持：
+     TeX Live 树和项目深层目录可能超过 260 字符。还要系统打开「启用 Win32 长路径」
+     （注册表 LongPathsEnabled），那是用户自己的系统设置，安装器不去改 -->
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity
+        type="win32"
+        name="Microsoft.Windows.Common-Controls"
+        version="6.0.0.0"
+        processorArchitecture="*"
+        publicKeyToken="6595b64144ccf1df"
+        language="*"
+      />
+    </dependentAssembly>
+  </dependency>
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings xmlns:ws2="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
+      <ws2:longPathAware>true</ws2:longPathAware>
+    </windowsSettings>
+  </application>
+</assembly>

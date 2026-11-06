@@ -1,0 +1,21 @@
+{
+  "issues": [
+    {
+      "id": "6a80c8663b672431-0",
+      "level": "error",
+      "kind": "scan",
+      "message": "File ended while scanning use of \\textbf .",
+      "chain": [
+        "<inserted text> ⟨here⟩\\par"
+      ],
+      "runaway": "{bold text that never closes. \\par Next paragraph. \\end {document}",
+      "logRange": [
+        15,
+        19
+      ]
+    }
+  ],
+  "errors": 1,
+  "warnings": 0,
+  "boxes": 0
+}

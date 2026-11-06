@@ -1,0 +1,199 @@
+% ---------------------------------------------------------------------------
+%  中文报告：复盘、周报、技术方案、实验报告都能用
+%  数字卡片、时间线、提示框、代码块、决策表，换掉内容就是一份成品。
+%  文中的日期与人名为示例；关于素帛的数字与做法取自它真实的设计。
+% ---------------------------------------------------------------------------
+\documentclass[UTF8,zihao=-4]{ctexart}
+
+\usepackage[a4paper,textwidth=38\ccwd,top=2.6cm,bottom=2.6cm,headheight=16pt]{geometry}
+\setmainfont{texgyrepagella}[
+  Extension=.otf, UprightFont=*-regular, ItalicFont=*-italic,
+  BoldFont=*-bold, BoldItalicFont=*-bolditalic]
+\setmonofont{SourceCodePro}[Extension=.otf, UprightFont=*-Regular, BoldFont=*-Semibold, Scale=MatchLowercase]
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+
+% 配色：墨色做结构，绿色是唯一的强调，琥珀色只用来提示风险
+\definecolor{ink}{HTML}{1F3A33}
+\definecolor{accent}{HTML}{2F7D63}
+\definecolor{amber}{HTML}{E0A63A}
+\definecolor{mist}{HTML}{75837E}
+\definecolor{paper}{HTML}{F4F7F5}
+\hypersetup{colorlinks, allcolors=accent}
+
+\linespread{1.4}
+\setlist{itemsep=1pt, topsep=3pt, leftmargin=2em}
+\ctexset{
+  section    = {format=\Large\bfseries\color{ink}, name={,}, number=\arabic{section},
+                aftername=\hspace{.8em}, beforeskip=3ex, afterskip=1.5ex},
+  subsection = {format=\large\bfseries, beforeskip=2ex, afterskip=1ex},
+}
+
+% 斜杠加一个点：落款与页眉上的小标记。深底上用 \subomark*（反白）
+\definecolor{snow}{HTML}{F7F8F7}
+\definecolor{leaf}{HTML}{6FCF9F}
+\NewDocumentCommand{\subomark}{s O{1em}}{{%
+  \IfBooleanTF{#1}{\colorlet{slash}{snow}\colorlet{dot}{leaf}}{\colorlet{slash}{ink}\colorlet{dot}{accent}}%
+  \tikz[x=#2/120, y=#2/120, baseline=-.1*#2]{%
+    \draw[slash, line width=12*#2/120, line cap=round] (36,90) -- (62,32);
+    \fill[dot] (82,34) circle (8);}}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[L]{\small\color{mist}\subomark[.9em]\enspace 素帛 · 季度复盘}
+\fancyhead[R]{\small\color{mist}内部资料}
+\fancyfoot[C]{\small\color{mist}\thepage}
+
+% 数字卡片：\kpi{数字}{说明}{变化}
+\newcommand{\kpi}[3]{%
+  \begin{tcolorbox}[enhanced, width=\linewidth, colback=paper, colframe=paper, arc=3pt,
+    left=10pt, right=10pt, top=8pt, bottom=8pt, equal height group=kpi]
+    {\fontsize{24}{28}\selectfont\bfseries\color{ink}#1}\par\vspace{2pt}
+    {\small #2}\par
+    {\footnotesize\color{accent}#3}
+  \end{tcolorbox}}
+
+% 提示框
+\newtcolorbox{note}[1][要点]{enhanced, colback=white, colframe=accent, boxrule=0pt,
+  leftrule=2.5pt, arc=0pt, left=12pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries\color{accent}, coltitle=accent, colbacktitle=white,
+  title=#1, attach title to upper={\quad}}
+\newtcolorbox{risk}[1][风险]{enhanced, colback=amber!6, colframe=amber, boxrule=0pt,
+  leftrule=2.5pt, arc=0pt, left=12pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, coltitle=amber!70!black, colbacktitle=amber!6,
+  title=#1, attach title to upper={\quad}}
+
+\lstset{
+  basicstyle=\ttfamily\small, columns=fullflexible, breaklines=true,
+  frame=none, backgroundcolor=\color{paper}, xleftmargin=10pt, framexleftmargin=10pt,
+  aboveskip=8pt, belowskip=8pt,
+  keywordstyle=\color{accent}\bfseries, commentstyle=\color{mist},
+  stringstyle=\color{ink}, showstringspaces=false,
+}
+
+\begin{document}
+
+% ---------------------------------------------------------------- 题头
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[ink] (current page.north west) rectangle ([yshift=-3.6cm]current page.north east);
+  \node[anchor=south west, inner sep=0pt] at ([xshift=2.6cm, yshift=-2.9cm]current page.north west)
+    {\subomark*[3em]};
+\end{tikzpicture}
+\vspace*{1.6cm}
+
+\noindent{\small\color{accent}\bfseries 复盘\quad\textperiodcentered\quad 2026 年第三季度}\par
+\vspace{6pt}
+\noindent{\fontsize{26}{32}\selectfont\bfseries\color{ink} 素帛，让灵感更自由\par}
+\vspace{4pt}
+\noindent{\large\color{mist} 一个离线 \LaTeX{} 工作台的第一个季度\par}
+\vspace{14pt}
+\noindent{\small
+  \begin{tabularx}{\linewidth}{@{}l X l l@{}}
+    {\color{mist}撰写} & 陈默（产品）、许嘉（工程） & {\color{mist}日期} & 2026 年 10 月 19 日 \\
+  \end{tabularx}}
+\vspace{10pt}
+
+\begin{note}[一句话]
+  我们把「装一个 \TeX{} 发行版」从几个 G、一个下午，缩短到一个两百来兆的安装包；
+  用不到的宏包和字体一个也不带，缺什么，打开文档时再补。
+\end{note}
+
+% ---------------------------------------------------------------- 数字
+\section{结果}
+
+\noindent
+\begin{minipage}[t]{.315\linewidth}\kpi{220\,MB}{安装包大小}{完整发行版约 8\,GB}\end{minipage}\hfill
+\begin{minipage}[t]{.315\linewidth}\kpi{0}{编译所需的网络请求}{文档与编译都在本机}\end{minipage}\hfill
+\begin{minipage}[t]{.315\linewidth}\kpi{1}{补齐缺包要点几下}{缺字清单，一键安装}\end{minipage}
+
+\vspace{6pt}
+三项目标全部达成。最让我们意外的是：只内置期刊、学位论文、简历模板里最常用的那一批宏包，
+就能让大多数真实模板开箱即编；剩下的，交给「缺字清单」在第一次编译时一次补齐。
+
+% ---------------------------------------------------------------- 背景
+\section{我们要解决什么}
+
+写 \LaTeX{} 的人通常面对三种不顺手：
+\begin{itemize}
+  \item \textbf{太重}：本地发行版动辄几个 G，装一次要一个下午；
+  \item \textbf{太远}：云端编辑器依赖网络，网速慢时编译要排队，导出还可能收费；
+  \item \textbf{太散}：编辑器、插件、发行版各管一段，出了错不知道该找谁。
+\end{itemize}
+「素帛」的回答是：文档和编译都留在本机，工具只带最小够用的那一部分。
+
+% ---------------------------------------------------------------- 时间线
+\section{过程}
+
+\begin{center}
+\begin{tikzpicture}[x=1cm, y=1cm, every node/.style={font=\small}]
+  \draw[mist!60, line width=1pt] (0,0) -- (13.6,0);
+  \foreach \x/\date/\what/\c in {
+      0/7 月 8 日/立项/ink,
+      3.4/8 月 2 日/编辑与预览跑通/ink,
+      6.8/8 月 30 日/精简发行版/ink,
+      10.2/9 月 21 日/缺字清单/ink,
+      13.6/10 月 12 日/首个安装包/accent} {
+    \fill[\c] (\x,0) circle (4pt);
+    \node[above=6pt, color=mist] at (\x,0) {\date};
+    \node[below=6pt, color=ink, font=\small\bfseries] at (\x,0) {\what};
+  }
+\end{tikzpicture}
+\end{center}
+
+\subsection{做对了什么}
+\begin{enumerate}
+  \item \textbf{先砍，再加。}从完整发行版出发，统计主流期刊、学位论文与简历模板
+        实际用到的宏包，只保留出现频率最高的那一批。
+  \item \textbf{把「缺」变成一个清单。}编译失败时不让用户读日志，而是直接列出缺的宏包，
+        一键补齐：
+\begin{lstlisting}[language=bash]
+# 用户看到的是一张清单，背后只是一条命令
+tlmgr install biblatex-gb7714-2015   # 缺 gb7714-2015.bbx
+\end{lstlisting}
+  \item \textbf{预置模板只带源码。}模板里引用的字体、宏包不随安装包分发，
+        打开即编译，缺什么补什么。
+\end{enumerate}
+
+\subsection{做得不够的地方}
+\begin{risk}[待改进]
+  首次补包仍需联网；在网络受限的环境里，需要提供一个可离线导入的宏包合集。
+\end{risk}
+
+% ---------------------------------------------------------------- 决策
+\section{关键决策}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+  \toprule
+  \textbf{问题} & \textbf{选择} & \textbf{理由} \\
+  \midrule
+  内置哪些宏包 & 按真实模板的使用频率选 & 体积与覆盖率的最好折中 \\
+  中文字体     & 用系统自带字体           & 一款中文字体就有十几 MB \\
+  编译引擎     & 只带 Xe\LaTeX{}          & 中文支持最好，维护一套就够 \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+% ---------------------------------------------------------------- 下一步
+\section{下一步}
+\begin{enumerate}
+  \item 离线宏包合集，覆盖无网络环境（许嘉，11 月底）；
+  \item 模板分类与预置模板，让新用户五分钟内排出第一份文档（陈默，11 月中）；
+  \item 编译错误的中文解释，覆盖最常见的 20 种报错（许嘉，12 月）。
+\end{enumerate}
+
+\vspace{.5em}
+\hfill\subomark[1.4em]
+
+\end{document}

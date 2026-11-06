@@ -1,0 +1,18 @@
+e10.clo))
+(/private/tmp/subo-smoke.k3J9xQ/fixture-000000000000000000000000000000000000000
+0000000000000000000000000000000000000000/scratchpad/hidedist/tex/latex/l3kernel
+/l3backend-xetex.def) (./c.aux)
+
+! LaTeX Error: File `chap1.tex' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: tex)
+
+Enter file name: 
+./c.tex:2: Emergency stop.
+<read *> 
+         
+l.2 \begin{document}\input{chap1}
+                                 \end{document}^^M
+No pages of output.
+Transcript written on c.log.

@@ -1,0 +1,20 @@
+{
+  "issues": [
+    {
+      "id": "570a545de4be1c70-0",
+      "level": "error",
+      "kind": "env",
+      "message": "\\begin{itemize} on input line 3 ended by \\end{enumerate}.",
+      "file": "main.tex",
+      "line": 5,
+      "here": "\\end{enumerate}⟨here⟩",
+      "logRange": [
+        15,
+        23
+      ]
+    }
+  ],
+  "errors": 1,
+  "warnings": 0,
+  "boxes": 0
+}

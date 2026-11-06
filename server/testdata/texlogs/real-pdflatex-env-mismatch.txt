@@ -1,0 +1,26 @@
+== pdflatex 第 1 遍
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-09-09>
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/l3kernel/l3backend-pdf
+tex.def)
+No file main.aux.
+
+./main.tex:5: LaTeX Error: \begin{itemize} on input line 3 ended by \end{enumer
+ate}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.5 \end{enumerate}
+                   
+./main.tex:5:  ==> Fatal error occurred, no output PDF file produced!
+Transcript written on /tmp/subo-logwork/subo/cli/96994d2b5fc9396f/pdflatex/main
+.log.

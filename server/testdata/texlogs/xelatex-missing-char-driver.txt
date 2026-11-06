@@ -1,0 +1,11 @@
+== xelatex 第 1 遍
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex)
+(./main.tex
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/article.cls)
+Missing character: There is no 字 (U+5B57) in font [lmroman10-regular]:mapping=tex-text;!
+Missing character: There is no 字 (U+5B57) in font [lmroman10-regular]:mapping=tex-text;!
+Missing character: There is no ( (U+FF08) in font [lmroman10-regular]:mapping=tex-text;!
+[1] (./main.aux) )
+xdvipdfmx:fatal: Cannot proceed without .vf or "physical" font for PDF output...
+
+No output PDF file written.

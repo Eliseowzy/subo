@@ -1,0 +1,185 @@
+== pdflatex 第 1 遍
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-09-09>
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.st
+y)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefin
+ekeys.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.
+sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmd
+s.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.
+sty)))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/gettitlestring/getti
+tlestring.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.st
+y)))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/stringenc/stringenc.
+sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/url/url.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/bigintcalc/bigintcal
+c.sty)))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfi
+lecheck.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/uniquecounter/unique
+counter.sty)))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/l3kernel/l3backend-pdf
+tex.def)
+No file main.aux.
+(./chapters/one.tex
+
+LaTeX Warning: Reference `tab:nothing' on page 1 undefined on input line 2.
+
+)
+
+LaTeX Warning: Reference `fig:missing' on page 1 undefined on input line 6.
+
+
+LaTeX Warning: Citation `knuth84' on page 1 undefined on input line 6.
+
+
+Overfull \hbox (157.9331pt too wide) in paragraph at lines 1--7
+\OT1/cmr/m/n/10 A line with a very long un-break-able iden-ti-fier \OT1/cmtt/m/
+n/10 a[]really[]long[]identifier[]without[]any[]breaks[]at[]all[]xxxxxxxxxx\OT1
+/cmr/m/n/10 .
+[1{/Users/tester/.subo/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.ma
+p}] (/tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)</Users/tester/subo/desktop
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></Users/tester/su
+bo/desktop/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></Users
+/tester/subo/desktop/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pf
+b></Users/tester/subo/desktop/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmtt10.pfb>
+Output written on /tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main.pdf
+ (1 page, 48502 bytes).
+SyncTeX written on /tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main.synctex.
+Transcript written on /tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main
+.log.
+== pdflatex 第 2 遍
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-09-09>
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.st
+y)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefin
+ekeys.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.
+sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmd
+s.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.
+sty)))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/gettitlestring/getti
+tlestring.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.st
+y)))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/stringenc/stringenc.
+sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/url/url.sty)
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/bigintcalc/bigintcal
+c.sty)))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfi
+lecheck.sty
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/generic/uniquecounter/unique
+counter.sty)))
+(/Users/tester/subo/desktop/texlive/texmf-dist/tex/latex/l3kernel/l3backend-pdf
+tex.def) (/tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main.aux
+
+LaTeX Warning: Label `sec:intro' multiply defined.
+
+) (/tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main.out)
+(/tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main.out)
+(./chapters/one.tex
+
+LaTeX Warning: Reference `tab:nothing' on page 1 undefined on input line 2.
+
+)
+
+LaTeX Warning: Reference `fig:missing' on page 1 undefined on input line 6.
+
+
+LaTeX Warning: Citation `knuth84' on page 1 undefined on input line 6.
+
+
+Overfull \hbox (157.9331pt too wide) in paragraph at lines 1--7
+\OT1/cmr/m/n/10 A line with a very long un-break-able iden-ti-fier \OT1/cmtt/m/
+n/10 a[]really[]long[]identifier[]without[]any[]breaks[]at[]all[]xxxxxxxxxx\OT1
+/cmr/m/n/10 .
+[1{/Users/tester/.subo/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.ma
+p}] (/tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ )
+(see the transcript file for additional information)</Users/tester/subo/desktop
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></Users/tester/su
+bo/desktop/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></Users
+/tester/subo/desktop/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pf
+b></Users/tester/subo/desktop/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmtt10.pfb>
+Output written on /tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main.pdf
+ (1 page, 48644 bytes).
+SyncTeX written on /tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main.synctex.
+Transcript written on /tmp/subo-logwork/subo/cli/c58920ae0be864b9/pdflatex/main
+.log.

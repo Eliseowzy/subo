@@ -1,0 +1,27 @@
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-09-09>
+(/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.
+cfg)
+(/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/graphics-def/xetex.def
+)))
+(/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/l3kernel/l3backend-xet
+ex.def) (./main.aux) [1] (./main.aux)subo-rungs: ghostscript not found: ./fig.eps
+
+xdvipdfmx:fatal: pdf_link_obj(): passed invalid object.
+
+No output PDF file written.
+ )
+Error 256 (driver return code) generating output;
+file main.pdf may not be valid.
+Transcript written on main.log.

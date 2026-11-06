@@ -1,0 +1,32 @@
+\chapter{版面负荷与评估模型}
+\label{chap:method}
+
+\section{版面负荷指标}
+
+\begin{definition}[版面负荷]
+  设一段文本在某一版式下的行长为 $L$（字），行距为 $s$（字号的倍数），
+  段落密度为 $d$（每屏段落数），定义其版面负荷为
+  \begin{equation}
+    \label{eq:load}
+    \Lambda(L, s, d) = \alpha \left( \frac{L - L^{*}}{L^{*}} \right)^{2}
+      + \beta \, \frac{1}{s} + \gamma \, \frac{1}{1 + d},
+  \end{equation}
+  其中 $L^{*}$ 为最适行长，$\alpha, \beta, \gamma \geqslant 0$ 为待估参数。
+\end{definition}
+
+式~\eqref{eq:load} 的三项分别对应三种额外的眼动成本：
+行太长或太短时的回扫与频繁换行、行距过小时的串行，以及段落过长时的定位困难。
+
+\begin{proposition}
+  当 $s$ 与 $d$ 固定时，$\Lambda$ 在 $L = L^{*}$ 处取得最小值。
+\end{proposition}
+
+\section{评估模型}
+
+模型的输入由语言特征 $\symbf{x}_{\text{lang}}$ 与版面特征 $\Lambda$ 拼接而成，
+输出为预测的可读性得分 $\hat{y}$：
+\begin{equation}
+  \hat{y} = \symbf{w}^{\top} \bigl[ \symbf{x}_{\text{lang}} ; \Lambda \bigr] + b .
+\end{equation}
+语言特征包括平均句长、常用字比例、专业术语密度等 18 项，详见附录。
+参数用最小二乘估计，并以五折交叉验证选择正则化强度。

@@ -1,0 +1,25 @@
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-09-09>
+
+(/private/tmp/subo-smoke.k3J9xQ/fixture-000000000000000000000000000000000000000
+0000000000000000000000000000000000000000/scratchpad/hidedist/tex/latex/base/art
+icle.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+
+(/private/tmp/subo-smoke.k3J9xQ/fixture-000000000000000000000000000000000000000
+0000000000000000000000000000000000000000/scratchpad/hidedist/tex/latex/base/siz
+e10.clo))
+
+! LaTeX Error: File `xltxtra.sty' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
+
+Enter file name: 
+./a.tex:3: Emergency stop.
+<read *> 
+         
+l.3 \begin
+          {document}hi\end{document}^^M
+No pages of output.
+Transcript written on a.log.

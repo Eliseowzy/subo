@@ -1,0 +1,53 @@
+# 构建产物
+target/
+dist/
+out/
+build/
+
+# 依赖
+node_modules/
+.npm-cache/
+
+# PDF.js 运行时资源（由 npm run sync:pdfjs 生成）
+app/public/cmaps/
+app/public/standard_fonts/
+
+# 第三方许可清单（npm run licenses 生成）
+app/public/licenses.json
+
+# 编译产物与本地状态（.stet/ 是改名前的旧目录）
+.subo/
+.stet/
+press/
+
+# 测试样例：含厂商字体，不入库
+fixtures/resume/
+
+# 编辑器与系统
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# 环境变量与密钥
+.env
+.env.*
+!.env.example
+
+# 日志
+*.log
+logs/
+
+# 临时文件
+*.tmp
+*.temp
+.cache/
+
+# 本地 agent 配置，不入库
+.claude/
+
+# 架构决策记录：只留本机，不入库
+docs/decisions/

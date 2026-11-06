@@ -1,0 +1,28 @@
+== xelatex 第 1 遍
+(./thesis.tex
+LaTeX2e <2024-06-01> patch level 2
+(/usr/local/texlive/2024/texmf-dist/tex/latex/biblatex/biblatex.sty)
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                thesis
+(biblatex)                and rerun LaTeX afterwards.
+
+)
+== biber
+INFO - This is Biber 2.20
+INFO - Logfile is 'thesis.blg'
+ERROR - Cannot find 'refs.bib'!
+INFO - ERRORS: 1
+== xelatex 第 2 遍
+(./thesis.tex
+LaTeX2e <2024-06-01> patch level 2
+(/usr/local/texlive/2024/texmf-dist/tex/latex/biblatex/biblatex.sty)
+
+Package biblatex Warning: The following entry could not be found
+(biblatex)                in the database:
+(biblatex)                smith2020
+(biblatex)                Please verify the spelling and rerun
+(biblatex)                LaTeX afterwards.
+
+[1] (./thesis.aux) )
+Output written on /tmp/press/thesis.pdf (1 page).

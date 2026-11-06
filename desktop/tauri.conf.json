@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Subo",
+  "version": "0.0.3",
+  "identifier": "app.subo.desktop",
+  "build": {
+    "beforeBuildCommand": "cd ../app && npm run build"
+  },
+  "app": {
+    "windows": [],
+    "security": {
+      "csp": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDAwQUJGMzczMTFDRDE3NTAKUldSUUY4MFJjL09yQUM3RWh0a2V1S1ZIaVVLdjE3QnpDZTFoQ04wOS85V1FzQ0pCelh2M0o2dTkK",
+      "requireSignedVersion": true
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["app", "dmg", "deb", "appimage", "nsis", "msi"],
+    "category": "Productivity",
+    "shortDescription": "本地的 LaTeX 工作台",
+    "copyright": "© 2026 素帛 Subo",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": {
+      "../app/dist/": "dist/"
+    },
+    "macOS": {
+      "minimumSystemVersion": "11.0",
+      "files": {
+        "Resources/en.lproj/InfoPlist.strings": "macos/en.lproj/InfoPlist.strings",
+        "Resources/zh-Hans.lproj/InfoPlist.strings": "macos/zh-Hans.lproj/InfoPlist.strings",
+        "Resources/zh-Hant.lproj/InfoPlist.strings": "macos/zh-Hant.lproj/InfoPlist.strings"
+      }
+    },
+    "linux": {
+      "deb": {
+        "depends": ["xdg-utils", "perl"]
+      }
+    },
+    "windows": {
+      "webviewInstallMode": { "type": "downloadBootstrapper" },
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico",
+        "sidebarImage": "windows/sidebar.bmp",
+        "installerHooks": "windows/installer-hooks.nsh",
+        "installMode": "currentUser",
+        "languages": ["SimpChinese", "TradChinese", "Japanese", "Korean", "English"],
+        "displayLanguageSelector": false
+      }
+    }
+  }
+}

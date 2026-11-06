@@ -1,0 +1,73 @@
+== pdflatex 第 1 遍
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex)
+(./paper.tex
+LaTeX2e <2024-06-01> patch level 2
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/article.cls)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/hyperref/hyperref.sty)
+No file paper.aux.
+
+LaTeX Warning: Citation `knuth84' on page 1 undefined on input line 20.
+
+
+LaTeX Warning: There were undefined references.
+
+== bibtex
+This is BibTeX, Version 0.99d (TeX Live 2024)
+The top-level auxiliary file: paper.aux
+I couldn't open database file refs.bib
+---line 4 of file paper.aux
+ : \bibdata{refs
+ :              }
+I'm skipping whatever remains of this command
+(There was 1 error message)
+== pdflatex 第 2 遍
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex)
+(./paper.tex
+LaTeX2e <2024-06-01> patch level 2
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/article.cls)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/hyperref/hyperref.sty)
+(./paper.aux)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 14.
+
+
+LaTeX Warning: Label `sec:intro' multiply defined.
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/bx/sc' undefined
+(Font)              using `OT1/cmr/bx/n' instead on input line 30.
+
+(./sections/method.tex
+
+LaTeX Warning: Citation `knuth84' on page 2 undefined on input line 7.
+
+
+LaTeX Warning: Reference `tab:results-with-a-label-long-enough-to-wrap-around-t
+he-edge' on page 2 undefined on input line 15.
+
+Underfull \hbox (badness 10000) in paragraph at lines 21--22
+
+ []
+
+[2]
+Overfull \hbox (41.2pt too wide) in paragraph at lines 33--33
+[]\OT1/cmr/m/n/10 See \OT1/cmtt/m/n/10 https://example.org/a/very/long/url(v2)| 
+
+
+LaTeX Warning: Float too large for page by 12.5pt on input line 40.
+
+)
+Overfull \vbox (689.11063pt too high) has occurred while \output is active []
+
+
+[3]
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ )
+Output written on /tmp/press/paper.pdf (3 pages, 81234 bytes).
+Transcript written on /tmp/press/paper.log.

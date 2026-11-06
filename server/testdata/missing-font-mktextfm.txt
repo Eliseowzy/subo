@@ -1,0 +1,29 @@
+(/usr/local/texlive/2026/texmf-dist
+/tex/latex/fontspec/fontspec.cfg)))
+kpathsea: Running mktextfm FontAwesome
+/usr/local/texlive/2026/texmf-dist/web2c/mktexnam: Could not map source abbreviation  for FontAwesome.
+/usr/local/texlive/2026/texmf-dist/web2c/mktexnam: Need to update ?
+mktextfm: Running mf-nowin -progname=mf \mode:=ljfour; mag:=1; ; nonstopmode; input FontAwesome
+This is METAFONT, Version 2.71828182 (TeX Live 2026) (preloaded base=mf)
+
+kpathsea: Running mktexmf FontAwesome
+
+! I can't find file `FontAwesome'.
+<*> ...r; mag:=1; ; nonstopmode; input FontAwesome
+                                                  
+Please type another input file name
+! Emergency stop.
+<*> ...r; mag:=1; ; nonstopmode; input FontAwesome
+                                                  
+Transcript written on mfput.log.
+grep: FontAwesome.log: No such file or directory
+mktextfm: `mf-nowin -progname=mf \mode:=ljfour; mag:=1; ; nonstopmode; input FontAwesome' failed to make FontAwesome.tfm.
+kpathsea: Appending font creation commands to missfont.log.
+
+
+/usr/local/texlive/2026/texmf-dist/
+tex/latex/fontawesome/fontawesome.sty:46: Package fontspec Error: 
+(fontspec)                The font "FontAwesome" cannot be found; this may
+(fontspec)                be but usually is not a fontspec bug. Either there
+(fontspec)                is a typo in the font name/file, the font is not
+(fontspec)                installed (correctly), or there is a bug in the

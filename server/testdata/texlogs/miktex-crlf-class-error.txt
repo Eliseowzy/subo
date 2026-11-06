@@ -1,0 +1,17 @@
+== xelatex 第 1 遍
+This is XeTeX, Version 3.141592653-2.6-0.999996 (MiKTeX 24.1) (preloaded format=xelatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(main.tex
+LaTeX2e <2021-11-15>
+ (E:\MikTeX\tex/latex/ctex\ctexart.cls
+
+E:\MikTeX\tex/latex/ctex\ctexart.cls:43: Class ctexart Error: Support package `
+expl3' too old.
+
+For immediate help type H <return>.
+ ...                                              
+                                                  
+l.43 ...or:nnn { ctex } { l3-too-old } { expl3 } }
+                                                  
+No pages of output.

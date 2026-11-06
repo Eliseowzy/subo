@@ -1,0 +1,31 @@
+\c@biburlbigbreakpenalty=\count400
+\c@biburlbreakpenalty=\count401
+\c@biburlnumpenalty=\count402
+\c@biburlucpenalty=\count403
+\c@biburllcpenalty=\count404
+\biburlbigskip=\muskip18
+\biburlnumskip=\muskip19
+\biburlucskip=\muskip20
+\biburllcskip=\muskip21
+\c@smartand=\count405
+)
+Package biblatex Info: Trying to load bibliography style 'ieee'...
+Package biblatex Info: ... file 'ieee.bbx' not found.
+
+/Users/myname/subo/desktop/texlive/texmf-dist/tex/latex/biblatex/biblatex.sty:1
+6474: Package biblatex Error: Style 'ieee' not found.
+
+See the biblatex package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16474 \RequireBibliographyStyle{\blx@bbxfile}
+                                               
+The bibliography style 'ieee' could not be found.
+
+ 
+Here is how much of TeX's memory you used:
+ 7096 strings out of 469676
+ 136744 string characters out of 5463697
+ 710279 words of memory out of 5000000
+ 36191 multiletter control sequences out of 15000+600000

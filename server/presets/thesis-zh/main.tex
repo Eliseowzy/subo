@@ -1,0 +1,96 @@
+% ---------------------------------------------------------------------------
+%  中文学位论文
+%  封面、摘要、目录、分章、参考文献（GB/T 7714—2015，biblatex + biber）、致谢。
+%  章节在 chapters/，前置与后置部分在 front/，文献条目在 refs.bib。
+%  中文字体用系统自带的，西文用内置的 TeX Gyre Termes，不必另装。
+%  各校格式要求不同：页边距、字号、页眉在下面的导言区改；封面信息在「论文信息」里改。
+%  文中的研究与数据均为示例。
+% ---------------------------------------------------------------------------
+\documentclass[UTF8,zihao=-4,openany,oneside]{ctexbook}
+
+\usepackage[a4paper,top=3cm,bottom=2.6cm,left=3cm,right=2.6cm,headheight=15pt,headsep=.8cm]{geometry}
+\setmainfont{texgyretermes}[
+  Extension=.otf, UprightFont=*-regular, ItalicFont=*-italic,
+  BoldFont=*-bold, BoldItalicFont=*-bolditalic]
+\usepackage{amsmath,amsthm}
+\usepackage{unicode-math}
+\setmathfont{texgyretermes-math.otf}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[backend=biber,style=gb7714-2015]{biblatex}
+\addbibresource{refs.bib}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{figures/}}
+\linespread{1.5}
+\setlist{itemsep=0pt, topsep=4pt, leftmargin=2.5em}
+\captionsetup{font=small, labelsep=quad}
+
+% 墨色做结构，绿色只用在图表里
+\definecolor{ink}{HTML}{1F3A33}
+\definecolor{accent}{HTML}{2F7D63}
+\definecolor{mist}{HTML}{75837E}
+
+% 章：居中，章号与章名分两行；节、小节左对齐
+\ctexset{
+  chapter = {
+    format     = \centering\color{ink},
+    nameformat = \zihao{-4}\color{mist},
+    titleformat= \heiti\zihao{3},
+    aftername  = \par\vspace{6pt},
+    beforeskip = 12pt, afterskip = 30pt,
+  },
+  section    = {format=\heiti\zihao{4}\color{ink}, beforeskip=18pt, afterskip=10pt},
+  subsection = {format=\heiti\zihao{-4}, beforeskip=12pt, afterskip=6pt},
+}
+
+% 页眉：左边论文题目，右边当前章；页码在页脚居中
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{mist}\thesistitle}
+\fancyhead[R]{\small\color{mist}\leftmark}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrule}{\color{mist!50}\hrule height .4pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrule}{}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{定义}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{命题}[chapter]
+
+% ---------------------------------------------------------------- 论文信息
+\newcommand{\thesistitle}{中文长文本可读性的计算评估方法研究}
+\newcommand{\thesistitleen}{Computational Assessment of Readability for Long-form Chinese Text}
+\newcommand{\thesisauthor}{苏\,望}
+\newcommand{\thesisid}{2023\,0000\,0000}
+\newcommand{\thesismajor}{计算机科学与技术}
+\newcommand{\thesisadvisor}{何\,明\,远\quad 教授}
+\newcommand{\thesisschool}{计算机科学与技术学院}
+\newcommand{\thesisuniv}{某\,某\,大\,学}
+\newcommand{\thesisdate}{二〇二六年五月}
+
+\begin{document}
+
+\frontmatter
+\input{front/cover}
+\input{front/abstract}
+{\hypersetup{linkcolor=black}\tableofcontents}
+
+\mainmatter
+\input{chapters/intro}
+\input{chapters/related}
+\input{chapters/method}
+\input{chapters/experiment}
+\input{chapters/conclusion}
+
+\backmatter
+\printbibliography[heading=bibintoc, title=参考文献]
+\input{front/thanks}
+
+\end{document}

@@ -1,0 +1,40 @@
+(/private/tmp/subo-smoke.k3J9xQ/fixture-000000000000000000000000000000000000000
+0000000000000000000000000000000000000000/scratchpad/hidedist/tex/latex/base/siz
+e10.clo))
+(/private/tmp/subo-smoke.k3J9xQ/fixture-000000000000000000000000000000000000000
+0000000000000000000000000000000000000000/scratchpad/hidedist/tex/latex/base/fon
+tenc.sty
+(/private/tmp/subo-smoke.k3J9xQ/fixture-000000000000000000000000000000000000000
+0000000000000000000000000000000000000000/scratchpad/hidedist/tex/latex/lm/t1lmr
+.fd))
+(/private/tmp/subo-smoke.k3J9xQ/fixture-000000000000000000000000000000000000000
+0000000000000000000000000000000000000000/scratchpad/hidedist/tex/latex/psnfss/t
+1phv.fd)
+kpathsea: Running mktextfm phvr8t
+/opt/texlive/texmf-dist/web2c/mktexnam: Could not map source abbreviation  for phvr8t.
+/opt/texlive/texmf-dist/web2c/mktexnam: Need to update ?
+mktextfm: Running mf-nowin -progname=mf \mode:=ljfour; mag:=1; ; nonstopmode; input phvr8t
+This is METAFONT, Version 2.71828182 (TeX Live 2026) (preloaded base=mf)
+
+kpathsea: Running mktexmf phvr8t
+
+! I can't find file `phvr8t'.
+<*> ...ljfour; mag:=1; ; nonstopmode; input phvr8t
+                                                  
+Please type another input file name
+! Emergency stop.
+<*> ...ljfour; mag:=1; ; nonstopmode; input phvr8t
+                                                  
+Transcript written on mfput.log.
+grep: phvr8t.log: No such file or directory
+mktextfm: `mf-nowin -progname=mf \mode:=ljfour; mag:=1; ; nonstopmode; input phvr8t' failed to make phvr8t.tfm.
+kpathsea: Appending font creation commands to missfont.log.
+
+./b.tex:3: Font T1/phv/m/n/10=phvr8t at 10.0pt not loadable: Metric (TFM) file 
+or installed font not found.
+<to be read again> 
+                   relax 
+l.3 \begin{document}
+                    hi\end{document}
+No pages of output.
+Transcript written on b.log.

@@ -1,0 +1,121 @@
+% ---------------------------------------------------------------------------
+%  中文简历：一页 A4
+%  左栏时间、右栏经历；图标用内置的 fontawesome5，中文字体用系统自带的。
+%  想换中文字体：\setCJKmainfont{字体名}（本机没有的字体，首次编译时日志里会提示）。
+%  人物与经历均为示例。写简历的原则：每一条都回答「做了什么、结果如何」。
+% ---------------------------------------------------------------------------
+\documentclass[UTF8,zihao=5]{ctexart}
+
+\usepackage[a4paper,top=1.5cm,bottom=1.3cm,left=1.7cm,right=1.7cm]{geometry}
+\setmainfont{texgyrepagella}[
+  Extension=.otf, UprightFont=*-regular, ItalicFont=*-italic,
+  BoldFont=*-bold, BoldItalicFont=*-bolditalic]
+\usepackage{fontawesome5}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+
+% 墨色做结构，绿色是唯一的强调
+\definecolor{ink}{HTML}{1F3A33}
+\definecolor{accent}{HTML}{2F7D63}
+\definecolor{mist}{HTML}{75837E}
+
+\pagestyle{empty}
+\linespread{1.38}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlist[itemize]{nosep, leftmargin=1em, label={\color{accent}\rule[.3ex]{3pt}{3pt}}}
+
+\newlength{\datecol}
+\setlength{\datecol}{6.2em}
+
+% 栏目：\block{教育背景}，左栏写标题，右边一条细线
+\newcommand{\block}[1]{%
+  \par\vspace{14pt}
+  \makebox[\datecol][l]{\color{accent}\bfseries #1}%
+  {\color{mist!40}\leaders\hrule height .4pt\hfill}\par\vspace{6pt}}
+
+% 经历：\entry{时间}{单位}{角色}{一句话}，一句话可留空；下面接 body 里的 itemize
+\newcommand{\entry}[4]{%
+  \par\noindent
+  \parbox[t]{\datecol}{\small\color{mist}#1}%
+  \parbox[t]{\dimexpr\linewidth-\datecol}{%
+    {\bfseries\color{ink}#2}\hfill{\small\color{mist}#3}\par
+    \ifx\relax#4\relax\else{\small\color{ink!80}#4}\par\fi}\par\vspace{2pt}}
+
+% 正文缩进到右栏
+\newenvironment{body}
+  {\begin{list}{}{\setlength{\leftmargin}{\datecol}\setlength{\topsep}{0pt}\setlength{\parsep}{0pt}}\item\relax}
+  {\end{list}\vspace{6pt}}
+
+\begin{document}
+
+% ---------------------------------------------------------------- 抬头
+{\fontsize{28pt}{32pt}\selectfont\bfseries\color{ink}林知远}%
+\hspace{1em}{\large\color{mist}设计工程师 · 阅读与排版产品}\par
+\vspace{8pt}
+{\small\color{mist}
+  \faPhone*\enspace 138-0000-0000\qquad
+  \faEnvelope[regular]\enspace\href{mailto:linzhiyuan@example.com}{linzhiyuan@example.com}\qquad
+  \faGithub\enspace\href{https://github.com/example}{github.com/example}\qquad
+  \faMapMarker*\enspace 杭州\par}
+\vspace{10pt}
+\begin{body}
+  六年做一件事：让屏幕上的文字更好读。既写界面代码，也画版式；
+  相信好的工具应当安静，把注意力还给内容本身。
+\end{body}
+
+% ---------------------------------------------------------------- 经历
+\block{工作经历}
+
+\entry{2022.07\\至今}{某某阅读}{高级设计工程师 · 排版组负责人}%
+  {负责阅读器的排版引擎与版式系统，服务 3\,000 万月活读者}
+\begin{body}
+\begin{itemize}
+  \item 重写中文断行与标点挤压模块，长段落排版耗时从 48\,ms 降到 6\,ms，翻页卡顿投诉下降 72\%；
+  \item 设计「舒适版式」：依据行长与行距实验确定默认参数，读者平均单次阅读时长提升 11\%；
+  \item 建立设计与工程共用的版式令牌（字号、行距、留白），新页面开发周期从两周缩短到四天。
+\end{itemize}
+\end{body}
+
+\entry{2020.03\\2022.06}{某某科技}{前端工程师}%
+  {负责知识库产品的编辑器与文档渲染}
+\begin{body}
+\begin{itemize}
+  \item 实现所见即所得的公式与表格编辑，覆盖 95\% 的 \LaTeX{} 常用语法；
+  \item 主导编辑器性能治理，万字文档的输入延迟稳定在 16\,ms 以内。
+\end{itemize}
+\end{body}
+
+% ---------------------------------------------------------------- 项目
+\block{个人项目}
+
+\entry{2021 -- 今}{「行间」中文排版工具集}{作者 · 开源}{}
+\begin{body}
+\begin{itemize}
+  \item 一组处理中西文混排间距、标点禁则与避头尾的小工具，GitHub 2.4k Star，被 30 余个项目采用；
+  \item 撰写系列文章《中文排版的十个细节》，累计阅读 50 万次。
+\end{itemize}
+\end{body}
+
+% ---------------------------------------------------------------- 教育
+\block{教育背景}
+
+\entry{2016 -- 2020}{某某大学}{数字媒体技术 · 本科}%
+  {GPA 3.7/4.0；毕业设计《屏幕中文正文的最适行长研究》获校级优秀论文}
+
+% ---------------------------------------------------------------- 技能
+\block{专业技能}
+
+\begin{body}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}>{\color{mist}}l X@{}}
+  工程 & TypeScript、React、Rust、WebAssembly、Canvas 与文本渲染 \\
+  设计 & 版式与字体设计、设计系统、Figma、交互原型 \\
+  排版 & \LaTeX{}、OpenType 特性、Unicode 断行规则、W3C《中文排版需求》 \\
+  语言 & 英语（工作语言，CET-6 620）、日语（N2） \\
+\end{tabularx}
+\end{body}
+
+\end{document}

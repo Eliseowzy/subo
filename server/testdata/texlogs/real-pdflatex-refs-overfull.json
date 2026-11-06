@@ -1,0 +1,91 @@
+{
+  "issues": [
+    {
+      "id": "8319a38ee7ceade3-0",
+      "level": "warning",
+      "kind": "multiplyDefined",
+      "message": "Label `sec:intro' multiply defined.",
+      "key": "sec:intro",
+      "logRange": [
+        146,
+        146
+      ]
+    },
+    {
+      "id": "a8c195fbd44ef4fd-0",
+      "level": "warning",
+      "kind": "undefinedRef",
+      "message": "Reference `tab:nothing' on page 1 undefined",
+      "file": "chapters/one.tex",
+      "line": 2,
+      "key": "tab:nothing",
+      "logRange": [
+        152,
+        152
+      ]
+    },
+    {
+      "id": "11e20b6fc4adb185-0",
+      "level": "warning",
+      "kind": "undefinedRef",
+      "message": "Reference `fig:missing' on page 1 undefined",
+      "file": "main.tex",
+      "line": 6,
+      "key": "fig:missing",
+      "logRange": [
+        156,
+        156
+      ]
+    },
+    {
+      "id": "e4336e9dc98ea709-0",
+      "level": "warning",
+      "kind": "undefinedCite",
+      "message": "Citation `knuth84' on page 1 undefined",
+      "file": "main.tex",
+      "line": 6,
+      "key": "knuth84",
+      "logRange": [
+        159,
+        159
+      ]
+    },
+    {
+      "id": "e649b7b5a31ba0b4-0",
+      "level": "warning",
+      "kind": "summary",
+      "message": "There were undefined references.",
+      "logRange": [
+        169,
+        169
+      ]
+    },
+    {
+      "id": "f40164fc3f3c5917-0",
+      "level": "warning",
+      "kind": "summary",
+      "message": "There were multiply-defined labels.",
+      "logRange": [
+        172,
+        172
+      ]
+    },
+    {
+      "id": "3c5c90edab000884-0",
+      "level": "box",
+      "kind": "overfullH",
+      "message": "Overfull \\hbox (157.9331pt too wide)",
+      "file": "main.tex",
+      "line": 1,
+      "lineEnd": 7,
+      "pt": 157.9331,
+      "logRange": [
+        162,
+        165
+      ]
+    }
+  ],
+  "errors": 0,
+  "warnings": 6,
+  "boxes": 1
+}

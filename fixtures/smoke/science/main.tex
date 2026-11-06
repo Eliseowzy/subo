@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{refs.bib}
+\begin{document}
+A speed of \SI{3e8}{\metre\per\second} \cite{knuth}.
+\begin{tikzpicture}
+  \begin{axis}[width=5cm]\addplot {x^2};\end{axis}
+\end{tikzpicture}
+\begin{tabular}{ll}\toprule a & b \\ \bottomrule\end{tabular}
+\printbibliography
+\end{document}

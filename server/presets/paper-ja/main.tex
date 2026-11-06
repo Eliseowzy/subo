@@ -1,0 +1,95 @@
+% !TEX program = lualatex
+% ---------------------------------------------------------------------------
+%  日本語論文（二段組）
+%  LuaLaTeX + jlreq（日本語組版処理の要件に準拠）。和文は原ノ味フォント、
+%  欧文は Latin Modern。参考文献は BibTeX（refs.bib）。
+%  LuaLaTeX と原ノ味フォントは初回コンパイル時にダウンロードして追加する（約 32 MB）。
+%  研究内容・数値・著者はすべて例なので、自分の内容に置き換えて使う。
+% ---------------------------------------------------------------------------
+\documentclass[paper=a4paper,fontsize=10pt,twocolumn]{jlreq}
+
+\usepackage[haranoaji]{luatexja-preset} % 原ノ味フォント（TeX Live 同梱）
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+\title{深層学習を用いた手書き数式認識の高精度化に関する研究}
+\author{山田 太郎\thanks{〇〇大学大学院 情報理工学研究科} \and 佐藤 花子\thanks{同上}}
+\date{2026年10月27日}
+
+\begin{document}
+
+\twocolumn[
+  \maketitle
+  \begin{abstract}
+    本研究では，手書き数式画像から \LaTeX{} 記法を生成する手法を提案する．
+    従来手法では長い数式における構造の誤認識が課題であった．
+    そこで，木構造を考慮したデコーダを導入し，認識精度を改善した．
+    公開データセットを用いた評価実験の結果，提案手法は既存手法と比較して
+    完全一致率を 4.2 ポイント向上させた．
+  \end{abstract}
+  \noindent\textbf{キーワード：}手書き数式認識，深層学習，系列変換
+  \vspace{1em}
+]
+
+\section{はじめに}
+数式は科学技術文書において不可欠な要素である．
+しかし，手書き数式をデジタル化する作業は依然として負担が大きい\cite{zhang2017}．
+本稿の貢献は以下の通りである．
+\begin{itemize}
+  \item 木構造を考慮したデコーダの提案
+  \item 大規模データセットにおける有効性の検証
+\end{itemize}
+なお，本稿の組版には LuaLaTeX と jlreq を用いた\cite{okumura2023}．
+
+\section{関連研究}
+系列変換モデルに基づく手法として，注意機構を用いたモデルが広く用いられている\cite{vaswani2017}．
+
+\section{提案手法}
+入力画像 $\mathbf{X}$ に対し，出力系列 $\mathbf{y} = (y_1, \dots, y_T)$ の条件付き確率を
+式~\eqref{eq:prob} のようにモデル化する．
+\begin{equation}
+  p(\mathbf{y} \mid \mathbf{X}) = \prod_{t=1}^{T} p(y_t \mid y_{<t}, \mathbf{X})
+  \label{eq:prob}
+\end{equation}
+
+\begin{figure}[tb]
+  \centering
+  \fbox{\parbox[c][3cm][c]{0.8\linewidth}{\centering 図をここに挿入}}
+  % \includegraphics[width=0.9\linewidth]{figure.pdf}
+  \caption{提案手法の概要}
+  \label{fig:overview}
+\end{figure}
+
+全体の構成を図~\ref{fig:overview} に示す．
+
+\section{評価実験}
+実験結果を表~\ref{tab:result} に示す．
+
+\begin{table}[tb]
+  \centering
+  \caption{完全一致率の比較}
+  \label{tab:result}
+  \begin{tabular}{lc}
+    \toprule
+    手法 & 完全一致率 (\%) \\
+    \midrule
+    従来手法 A & 52.1 \\
+    従来手法 B & 54.8 \\
+    提案手法   & \textbf{59.0} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{おわりに}
+本稿では，手書き数式認識のための新たな手法を提案した．
+今後の課題として，複数行にわたる数式への拡張が挙げられる．
+
+\section*{謝辞}
+本研究は JSPS 科研費 JP00000000 の助成を受けたものである．
+
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+\end{document}

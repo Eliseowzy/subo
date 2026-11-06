@@ -1,0 +1,41 @@
+\chapter{摘\quad 要}
+
+一篇文章读起来累不累，取决于两件事：写了什么，以及排成了什么样子。
+已有的可读性公式大多只看前者——句子多长、词有多难——而把版面当作不变的背景。
+对于动辄上万字的中文长文本，这种做法会漏掉一个重要的变量：
+同样的文字，排在 40 字一行的屏幕上和 20 字一行的书页上，读者付出的努力并不相同。
+
+本文提出一种同时考虑\textbf{语言难度}与\textbf{版面负荷}的中文长文本可读性评估方法。
+主要工作如下：
+（1）构建了包含 1\,200 篇文章、36\,000 条阅读记录的中文长文本阅读数据集，
+记录了每位读者在不同版式下的阅读时间与理解得分；
+（2）提出版面负荷指标，用行长、行距与段落密度刻画「排版让眼睛多做了多少事」；
+（3）设计了融合语言特征与版面特征的评估模型，在数据集上与人工评分的相关系数达到
+$0.81$，比只用语言特征的基线提高 $0.12$。
+
+实验表明，版面因素可以解释可读性差异中约五分之一的部分。
+这一结论为中文排版规范、阅读类产品的版式设计提供了可量化的依据。
+
+\vspace{1em}
+\noindent{\heiti 关键词：}可读性；中文排版；长文本；阅读负荷；评估模型
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\markboth{Abstract}{Abstract}
+
+Whether a text is tiring to read depends on what it says and on how it is set.
+Classical readability formulas look only at the former. For long-form Chinese text,
+which may run to tens of thousands of characters, this ignores an important variable:
+the same words cost the reader different effort on a 40-character screen line and on
+a 20-character book line.
+
+This thesis proposes a readability assessment method for long-form Chinese text that
+accounts for both \emph{linguistic difficulty} and \emph{layout load}. We build a
+dataset of 1,200 articles and 36,000 reading sessions, define a layout-load index from
+line length, leading and paragraph density, and design a model that combines linguistic
+and layout features. The model correlates with human ratings at $r = 0.81$, an
+improvement of $0.12$ over a language-only baseline.
+
+\vspace{1em}
+\noindent\textbf{Keywords:} readability; Chinese typography; long-form text;
+reading load; assessment model

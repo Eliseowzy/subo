@@ -1,0 +1,6 @@
+/target
+/gen
+node_modules/
+/texlive
+/texlive-windows
+/texlive-x64

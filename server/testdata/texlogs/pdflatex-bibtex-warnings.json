@@ -1,0 +1,151 @@
+{
+  "issues": [
+    {
+      "id": "d41aa99537ecd87f-0",
+      "level": "warning",
+      "kind": "bib",
+      "message": "I couldn't open database file refs.bib",
+      "source": "bibtex",
+      "logRange": [
+        17,
+        17
+      ]
+    },
+    {
+      "id": "c42e24f1263233ff-0",
+      "level": "warning",
+      "kind": "other",
+      "message": "Token not allowed in a PDF string (Unicode): removing `math shift'",
+      "file": "paper.tex",
+      "line": 14,
+      "source": "hyperref",
+      "logRange": [
+        31,
+        32
+      ]
+    },
+    {
+      "id": "8319a38ee7ceade3-0",
+      "level": "warning",
+      "kind": "multiplyDefined",
+      "message": "Label `sec:intro' multiply defined.",
+      "key": "sec:intro",
+      "logRange": [
+        35,
+        35
+      ]
+    },
+    {
+      "id": "eb42627e67dd1879-0",
+      "level": "warning",
+      "kind": "font",
+      "message": "Font shape `OT1/cmr/bx/sc' undefined using `OT1/cmr/bx/n' instead",
+      "file": "paper.tex",
+      "line": 30,
+      "logRange": [
+        38,
+        39
+      ]
+    },
+    {
+      "id": "81110633fa91efaf-0",
+      "level": "warning",
+      "kind": "undefinedCite",
+      "message": "Citation `knuth84' on page 2 undefined",
+      "file": "sections/method.tex",
+      "line": 7,
+      "key": "knuth84",
+      "logRange": [
+        43,
+        43
+      ]
+    },
+    {
+      "id": "baaa22d37a21fb95-0",
+      "level": "warning",
+      "kind": "undefinedRef",
+      "message": "Reference `tab:results-with-a-label-long-enough-to-wrap-around-the-edge' on page 2 undefined",
+      "file": "sections/method.tex",
+      "line": 15,
+      "key": "tab:results-with-a-label-long-enough-to-wrap-around-the-edge",
+      "logRange": [
+        46,
+        47
+      ]
+    },
+    {
+      "id": "c899204b713ee22f-0",
+      "level": "warning",
+      "kind": "floatTooLarge",
+      "message": "Float too large for page by 12.5pt",
+      "file": "sections/method.tex",
+      "line": 40,
+      "pt": 12.5,
+      "logRange": [
+        58,
+        58
+      ]
+    },
+    {
+      "id": "e649b7b5a31ba0b4-0",
+      "level": "warning",
+      "kind": "summary",
+      "message": "There were undefined references.",
+      "logRange": [
+        66,
+        66
+      ]
+    },
+    {
+      "id": "f40164fc3f3c5917-0",
+      "level": "warning",
+      "kind": "summary",
+      "message": "There were multiply-defined labels.",
+      "logRange": [
+        69,
+        69
+      ]
+    },
+    {
+      "id": "99806f939e038a48-0",
+      "level": "box",
+      "kind": "underfullH",
+      "message": "Underfull \\hbox (badness 10000)",
+      "file": "sections/method.tex",
+      "line": 21,
+      "lineEnd": 22,
+      "logRange": [
+        49,
+        49
+      ]
+    },
+    {
+      "id": "f49880fc14ec5a49-0",
+      "level": "box",
+      "kind": "overfullH",
+      "message": "Overfull \\hbox (41.2pt too wide)",
+      "file": "sections/method.tex",
+      "line": 33,
+      "pt": 41.2,
+      "logRange": [
+        54,
+        55
+      ]
+    },
+    {
+      "id": "e56550c39935b870-0",
+      "level": "box",
+      "kind": "overfullV",
+      "message": "Overfull \\vbox (689.11063pt too high) has occurred while \\output is active",
+      "file": "paper.tex",
+      "pt": 689.11063,
+      "logRange": [
+        61,
+        61
+      ]
+    }
+  ],
+  "errors": 0,
+  "warnings": 9,
+  "boxes": 3
+}

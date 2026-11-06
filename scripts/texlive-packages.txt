@@ -1,0 +1,43 @@
+# 内置 TeX Live 在 scheme-basic 之上要装的宏包（CI 用 tlmgr install 装，再交给 texlive-trim.sh 裁剪）。
+# 依赖会自动带上；平台二进制包（<包>.<平台>）不用列。与 macOS 本机精简版（TL 2026）对齐。
+algorithmicx algorithms bbm bbm-macros beamer biber biblatex booktabs caption chinese-jfm cjk
+cjkpunct cleveref comment ctablestack ctex dehyph diagbox enumitem epstopdf euenc everyhook float
+fontawesome fontaxes fontspec fp garuda-c90 grffile helvetic hyphen-english ifmtarg inconsolata
+infwarerr kastrup l3kernel-dev latex-base-dev latex-firstaid-dev lm logreq lualibs luamml luatexbase
+luatexja mathtools metalogo microtype multirow mweights norasi-c90 nth parskip pgf pict2e platex
+platex-tools preprint ptex-base qrcode realscripts savetrees setspace svn-prov symbol
+texlive-scripts-extra titlesec translator ulem units uplatex upquote uptex-base wrapfig xcjk2uni
+xcolor xecjk xetex xetexconfig xifthen xkeyval xltxtra xpinyin xunicode zapfding zhnumber
+# ctex 在 Linux 上的默认字体集（fontset=fandol）；macOS 用系统字体，裁剪时会删掉
+fandol
+# 常用套件：让论文、报告、简历、幻灯片的常见模板开箱能编，不必一上来就按需装一串。
+# 收录标准是主流期刊 / 学位论文 / Overleaf 模板里高频出现的宏包；冷门的仍走缺字清单按需装。
+# 推荐集合（koma-script、memoir、unicode-math、listings、fancyvrb、subfig、pdfpages、polyglossia……）
+collection-latexrecommended
+# xelatex 用的 OpenType 正文与数学字体
+lm-math tex-gyre tex-gyre-math stix2-otf xits sourcecodepro
+# 表格、数值、框
+siunitx tcolorbox tikzfill pdfcol xurl makecell threeparttable threeparttablex tabularray nicematrix
+arydshln ltablex tabu pbox varwidth
+# 版式与结构
+appendix tocloft footmisc nomencl glossaries xstring adjustbox collectbox changepage sectsty titling
+mdframed framed needspace environ trimspaces marginnote soul datetime2 csvsimple relsize placeins
+sttools chngcntr hyphenat emptypage lastpage etoc xpatch bigfoot newunicodechar thmtools textpos
+catchfile todonotes csquotes
+# 数学、理化、算法、绘图
+cancel mhchem chemfig physics was esint rsfs doublestroke esvect mathdots extarrows algorithm2e
+algorithmicx tikz-cd circuitikz forest pgfplots minted fvextra
+# 示例文字、图标、简历
+lipsum blindtext zhlipsum fontawesome5 academicons orcidlink moderncv
+# 期刊模板与参考文献（含国标 GB/T 7714）
+ieeetran elsarticle acmart llncs revtex gbt7714 biblatex-gb7714-2015 cite
+# 上面这些模板实际用到、但 tlmgr 依赖里没声明的（acmart 在 xelatex 下要 Libertinus）
+zref totpages hyperxmp ncctools fontawesome6 aliascnt libertinus-fonts libertinus-otf
+# luatexja 要、tlpdb 里没声明的（28 KB）。日文的其余部分只在按需引擎下有用，都不内置、编到时再装：
+# LuaHBTeX、pTeX 引擎，原ノ味字体（haranoaji，37 MB），jlreq（虚拟字体占 15 MB）、jsclasses
+regexpatch
+# 韩文（xelatex + xetexko，64 KB）：cjk-ko 带 xetexko 要的 kolabels-utf / konames-utf，tlpdb 里没声明。
+# 字体 unfonts-core（UnBatang、UnDotum，解压 33 MB）不内置，编到时再装
+xetexko cjk-ko
+# 真实项目里常见的字体宏包（Overleaf 模板、arXiv 论文）
+libertine sourcesans newtx tipa

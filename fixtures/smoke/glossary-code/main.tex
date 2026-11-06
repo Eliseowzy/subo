@@ -1,0 +1,17 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage[ruled]{algorithm2e}
+\usepackage{hyperref}
+\usepackage{glossaries}
+\usepackage{cleveref}
+\makeglossaries
+\newglossaryentry{tex}{name=TeX, description={a typesetting system}}
+\begin{document}
+\gls{tex} is used in \cref{alg}.
+\begin{lstlisting}[language=Python]
+print("hi")
+\end{lstlisting}
+\begin{algorithm}\caption{Noop}\label{alg}\KwRet{0}\end{algorithm}
+\printglossaries
+\end{document}

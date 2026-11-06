@@ -1,0 +1,140 @@
+# 桌面壳：各平台构建安装包。macOS、Linux 内置 TeX Live；Windows 先出不带 TeX 的轻量版（用本机的 TeX Live / MiKTeX），
+# 内置 TeX 的 Windows 包目前在 macOS 上用 ./scripts/desktop.sh windows 交叉打
+name: desktop
+
+# Actions 按分钟计费：只在 Actions 页面手动点 Run workflow 时跑，推送和 PR 不自动触发
+on:
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14          # Apple silicon
+            bundles: app,dmg
+          - os: macos-15-intel    # Intel（macos-13 镜像已下线，排上队也等不到机器）
+            bundles: app,dmg
+          - os: ubuntu-22.04      # glibc 2.35，AppImage 往新发行版兼容
+            bundles: deb,appimage
+          - os: windows-latest    # MSVC 工具链，静态链接 WebView2Loader
+            bundles: nsis,msi
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+
+      # Ubuntu 软件源时快时慢（慢时 55 MB 要下 14 分钟）：下好的 .deb 存进缓存，下次只补新版本。
+      # key 带 run_id 每次都存一份，restore-keys 取最近的那份
+      - name: apt 包缓存
+        if: runner.os == 'Linux'
+        uses: actions/cache@v5
+        with:
+          path: ~/.apt-cache/*.deb
+          key: apt-${{ matrix.os }}-${{ github.run_id }}
+          restore-keys: apt-${{ matrix.os }}-
+      - name: Linux 依赖（WebKitGTK 等）
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p ~/.apt-cache/partial
+          sudo apt-get update
+          sudo apt-get install -y -o Dir::Cache::Archives="$HOME/.apt-cache" -o Acquire::Retries=3 \
+            libwebkit2gtk-4.1-dev libayatana-appindicator3-dev \
+            librsvg2-dev libxdo-dev libssl-dev patchelf
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          # 后面的步骤失败也把依赖编译结果存下来，免得下次又从头编
+          cache-on-failure: true
+          workspaces: |
+            server
+            desktop
+
+      - name: 前端依赖
+        run: cd app && npm ci
+      - name: 服务端测试（编译）
+        run: cd server && cargo test --no-run
+      # 串行跑，日志里先打出用例名再等结果，卡住时能看出是哪一个；限住内存和时长，
+      # 失控的用例只会让这一步失败，不会把整台 runner 拖垮（那样日志都拿不到）
+      - name: 服务端测试
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          cd server
+          if [ "$RUNNER_OS" = Linux ]; then
+            ( while sleep 60; do echo "::group::资源"; free -m | sed -n 2p; df -h / | tail -1; echo "::endgroup::"; done ) &
+            ulimit -v 4194304
+          fi
+          cargo test -- --test-threads=1
+      - name: 桌面壳依赖
+        run: cd desktop && npm ci
+
+      # macOS、Linux 安装包内置精简 TeX Live：装一份 scheme-basic + 宏包清单，裁剪后由
+      # scripts/desktop.sh bundle 放进 Subo.app/Contents/Resources/texlive，
+      # 或拆开 deb / AppImage 放进 usr/lib/subo/texlive
+      - name: 安装 TeX Live
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p "$RUNNER_TEMP/install-tl" && cd "$RUNNER_TEMP/install-tl"
+          curl -fsSL https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
+            | tar xz --strip-components=1
+          cat > subo.profile <<EOF
+          selected_scheme scheme-basic
+          TEXDIR $RUNNER_TEMP/texlive
+          TEXMFLOCAL $RUNNER_TEMP/texlive/texmf-local
+          TEXMFSYSVAR $RUNNER_TEMP/texlive/texmf-var
+          TEXMFSYSCONFIG $RUNNER_TEMP/texlive/texmf-config
+          instopt_adjustpath 0
+          tlpdbopt_install_docfiles 0
+          tlpdbopt_install_srcfiles 0
+          tlpdbopt_autobackup 0
+          EOF
+          perl ./install-tl --profile=subo.profile >/dev/null
+          TLMGR="$(echo "$RUNNER_TEMP"/texlive/bin/*/tlmgr)"
+          "$TLMGR" install $(grep -v '^#' "$GITHUB_WORKSPACE/scripts/texlive-packages.txt")
+      - name: 裁剪 TeX Live
+        if: runner.os != 'Windows'
+        run: ./scripts/texlive-trim.sh "$RUNNER_TEMP/texlive"
+      - name: appimagetool
+        if: runner.os == 'Linux'
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/appimagetool" \
+            https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x "$RUNNER_TEMP/appimagetool"
+          echo "APPIMAGETOOL=$RUNNER_TEMP/appimagetool" >> "$GITHUB_ENV"
+
+      # 两种安装包，软件完全一样，只差缺 WebView2 时怎么办：
+      # 标准包联网下载（tauri.conf.json 里的 downloadBootstrapper）；离线包把离线安装器打进去，给内网、断网机器。
+      # 第二次只重新打包，不重新编译。产物同名，打完一种就改名
+      - name: 打包
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          cd desktop
+          OUT=target/dist/bundle
+          npx tauri build --bundles ${{ matrix.bundles }} -- --profile dist
+          for f in $OUT/nsis/*-setup.exe; do mv "$f" "${f%.exe}-lite.exe"; done
+          for f in $OUT/msi/*.msi; do mv "$f" "${f%.msi}-lite.msi"; done
+          npx tauri build --bundles nsis \
+            --config '{"bundle":{"windows":{"webviewInstallMode":{"type":"offlineInstaller","silent":true}}}}' \
+            -- --profile dist
+          for f in $OUT/nsis/*-setup.exe; do mv "$f" "${f%.exe}-lite-offline.exe"; done
+      - name: 打包（内置 TeX Live）
+        if: runner.os != 'Windows'
+        run: SUBO_RELEASE=1 ./scripts/desktop.sh bundle
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: subo-${{ matrix.os }}
+          path: |
+            desktop/target/dist/bundle/dmg/*.dmg
+            desktop/target/dist/bundle/deb/*.deb
+            desktop/target/dist/bundle/appimage/*.AppImage
+            desktop/target/dist/bundle/nsis/*.exe
+            desktop/target/dist/bundle/msi/*.msi
+          if-no-files-found: ignore
