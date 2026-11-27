@@ -286,6 +286,8 @@ export default defineLocale({
       fileMenu: {
         label: "ファイルの操作",
         open: "開く",
+        setEntry: "メインファイルに設定",
+        entrySet: "「{name}」をメインファイルに設定しました",
         newFile: "新規ファイル",
         newFolder: "新規フォルダー",
         rename: "名前を変更",
@@ -674,6 +676,7 @@ export default defineLocale({
     },
     preview: {
       label: "PDF プレビュー",
+      labelFile: "PDF プレビュー · {file}",
       empty: "表示するものがありません",
       zoomIn: "拡大",
       zoomOut: "縮小",
@@ -1402,6 +1405,10 @@ export default defineLocale({
       build: {
         waitTimeout: "ビルド結果の待機が時間切れになりました",
         noTex: "プロジェクトに .tex ファイルが見つかりません",
+      },
+      entry: {
+        notTex: "メインファイルに設定できるのは .tex ファイルだけです",
+        save: "メインファイル設定の保存に失敗しました：{detail}",
       },
       job: {
         notFound: "そのビルドはありません",

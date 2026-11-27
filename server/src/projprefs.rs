@@ -1,4 +1,4 @@
-//! 按项目存的设置（目前只有引擎），放在 `~/.subo/projects/<项目 id>.json`。
+//! 按项目存的设置（引擎、主文件入口），放在 `~/.subo/projects/<项目 id>.json`。
 //!
 //! 不写进项目目录：项目库是用户的源码，会进 git、会传回 arXiv，不往里塞我们的文件。
 //! 读不出来（没设过、文件坏了）都当默认值，不拦打开项目。
@@ -13,6 +13,9 @@ pub struct ProjectPrefs {
     /// `pdflatex` / `xelatex`；没有表示自动探测
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub engine: Option<String>,
+    /// 用户指定或编译时跟随记住的入口 `.tex` 相对路径；没有表示自动探测
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub entry: Option<String>,
 }
 
 fn file(dir: &Path, id: &str) -> PathBuf {
@@ -38,6 +41,14 @@ pub fn save(dir: &Path, id: &str, prefs: &ProjectPrefs) -> io::Result<()> {
     fs::rename(&tmp, &f)
 }
 
+/// 读出当前设置并按闭包就地更新后保存，避免改一个字段时把另一个字段覆盖掉
+pub fn update(dir: &Path, id: &str, f: impl FnOnce(&mut ProjectPrefs)) -> io::Result<ProjectPrefs> {
+    let mut prefs = load(dir, id);
+    f(&mut prefs);
+    save(dir, id, &prefs)?;
+    Ok(prefs)
+}
+
 /// 项目改名后跟着挪；没设过就什么都不做
 pub fn rename(dir: &Path, old: &str, new: &str) {
     let _ = fs::rename(file(dir, old), file(dir, new));
@@ -52,12 +63,16 @@ mod tests {
         let d = std::env::temp_dir().join(format!("subo-projprefs-{}", std::process::id()));
         let _ = fs::remove_dir_all(&d);
         assert_eq!(load(&d, "a"), ProjectPrefs::default());
-        let p = ProjectPrefs { engine: Some("pdflatex".into()) };
+        let p = ProjectPrefs { engine: Some("pdflatex".into()), entry: Some("resume_harness.tex".into()) };
         save(&d, "a", &p).unwrap();
         assert_eq!(load(&d, "a"), p);
+        // 单改 engine 不丢 entry
+        update(&d, "a", |x| x.engine = Some("xelatex".into())).unwrap();
+        assert_eq!(load(&d, "a").entry.as_deref(), Some("resume_harness.tex"));
         rename(&d, "a", "b");
         assert_eq!(load(&d, "a"), ProjectPrefs::default());
-        assert_eq!(load(&d, "b"), p);
+        assert_eq!(load(&d, "b").engine.as_deref(), Some("xelatex"));
+        assert_eq!(load(&d, "b").entry.as_deref(), Some("resume_harness.tex"));
         save(&d, "b", &ProjectPrefs::default()).unwrap();
         assert!(!file(&d, "b").exists());
         let _ = fs::remove_dir_all(&d);

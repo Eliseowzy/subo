@@ -339,7 +339,7 @@ fn build(ctx: &Ctx, raw: &[String]) -> Res {
     ctx.use_tex(a.value("tex"))?;
     let (root, file) = project_dir(ctx, a.pos.first())?;
     let explicit = a.value("entry").map(str::to_string).or(file);
-    let entry = entry_of(&root, explicit.as_deref())?;
+    let entry = entry_of(ctx, &root, explicit.as_deref())?;
     let want = a.value("engine").unwrap_or("auto");
     let base = if want == "mock" { "mock".to_string() } else { engine::detect("auto") };
     if base == "mock" && want != "mock" {
@@ -857,20 +857,23 @@ fn choose_program(ctx: &Ctx, root: &Path, entry: &str, base: &str, want: &str) -
     Ok(ProgramChoice { program: c.program.name().to_string(), missing, warnings, why })
 }
 
-/// 项目在素帛里选过的引擎：项目库里的按目录名，登记过的本地文件夹按清单里的 id
-fn saved_engine(ctx: &Ctx, root: &Path) -> Option<String> {
+/// 项目在素帛里存过的设置（引擎、主文件）：项目库里的按目录名，登记过的本地文件夹按清单里的 id
+fn saved_prefs(ctx: &Ctx, root: &Path) -> projprefs::ProjectPrefs {
     let subo = library::subo_dir();
     let home = dunce::canonicalize(&ctx.home()).ok();
     let id = match home.as_deref().and_then(|h| root.strip_prefix(h).ok()) {
-        Some(rest) => rest.components().next()?.as_os_str().to_string_lossy().to_string(),
+        Some(rest) => rest.components().next().map(|c| c.as_os_str().to_string_lossy().to_string()),
         None => folders::Folders::open(subo.join("folders.json"))
             .all()
             .iter()
-            .find(|f| dunce::canonicalize(&f.path).ok().as_deref() == Some(root))?
-            .id
-            .clone(),
+            .find(|f| dunce::canonicalize(&f.path).ok().as_deref() == Some(root))
+            .map(|f| f.id.clone()),
     };
-    projprefs::load(&subo.join("projects"), &id).engine
+    id.map(|id| projprefs::load(&subo.join("projects"), &id)).unwrap_or_default()
+}
+
+fn saved_engine(ctx: &Ctx, root: &Path) -> Option<String> {
+    saved_prefs(ctx, root).engine
 }
 
 // ---------------------------------------------------------------------------
@@ -1220,7 +1223,7 @@ fn doctor(ctx: &Ctx, raw: &[String]) -> Res {
 fn inspect(ctx: &Ctx, raw: &[String]) -> Res {
     let a = Args::parse("inspect", raw, &["entry"], &[], 1)?;
     let (root, file) = project_dir(ctx, a.pos.first())?;
-    let entry = entry_of(&root, a.value("entry").map(str::to_string).or(file).as_deref())?;
+    let entry = entry_of(ctx, &root, a.value("entry").map(str::to_string).or(file).as_deref())?;
     let choice = choose_program(ctx, &root, &entry, &engine::detect("auto"), "auto")?;
     let tex: Vec<String> = project::tree(&root).into_iter().filter(|e| !e.dir && e.path.ends_with(".tex")).map(|e| e.path).collect();
     let mut o = Out::default();
@@ -1316,15 +1319,16 @@ fn project_dir(ctx: &Ctx, arg: Option<&String>) -> Result<(PathBuf, Option<Strin
     }
 }
 
-/// 入口：`--entry` 给的，或自动识别。给的是入口 `.tex` 文件路径时也认
-fn entry_of(root: &Path, flag: Option<&str>) -> Result<String, Failure> {
+/// 入口：`--entry` 给的，或项目记着的主文件，或自动识别。给的是入口 `.tex` 文件路径时也认
+fn entry_of(ctx: &Ctx, root: &Path, flag: Option<&str>) -> Result<String, Failure> {
     if let Some(e) = flag {
         return match project::resolve(root, e) {
-            Ok(p) if p.is_file() => Ok(e.trim_start_matches(['/', '\\']).trim_start_matches("./").to_string()),
+            Ok(p) if p.is_file() => Ok(project::normalize_rel(e)),
             _ => Err(Failure::usage("build.noEntry", format!("{} 里没有 {e}", root.display()))),
         };
     }
-    project::entry(root).ok_or_else(|| {
+    let saved = saved_prefs(ctx, root).entry;
+    project::entry_with_preferred(root, saved.as_deref()).ok_or_else(|| {
         Failure::usage("build.noTex", format!("{} 里没有 .tex 文件", root.display())).hint("确认目录对不对；入口不在根目录就用 --entry 指定")
     })
 }

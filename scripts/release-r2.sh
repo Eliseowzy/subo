@@ -11,7 +11,7 @@
 #   latest.json           版本清单，最后才覆盖：包没传完之前客户端看不到新版本
 #
 # 用 npx wrangler 上传，先 `npx wrangler login` 登录一次（或设 CLOUDFLARE_API_TOKEN）。
-# 环境变量：SUBO_R2_BUCKET（默认 subo）、SUBO_UPDATE_BASE（默认 https://dl.subo.ink）
+# 环境变量：SUBO_R2_BUCKET（默认 subo-media，和 media.subo.ink 共用；更新包走 dl.subo.ink 这个域名）、SUBO_UPDATE_BASE（默认 https://dl.subo.ink）
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
 done
 [ -z "$NOTES" ] || [ -f "$NOTES" ] || { echo "找不到更新说明文件：$NOTES" >&2; exit 1; }
 
-BUCKET="${SUBO_R2_BUCKET:-subo}"
+BUCKET="${SUBO_R2_BUCKET:-subo-media}"
 BASE="${SUBO_UPDATE_BASE:-https://dl.subo.ink}"
 BASE="${BASE%/}"
 VERSION="$(sed -n 's/^  "version": "\(.*\)",$/\1/p' tauri.conf.json)"
@@ -72,14 +72,14 @@ const notes = notesFile ? require("fs").readFileSync(notesFile, "utf8").trim() :
 require("fs").writeFileSync(out, JSON.stringify({ version, notes, pub_date: date, platforms }, null, 2) + "\n");
 ' "$MANIFEST" "$VERSION" "$NOTES" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "${PAIRS[@]}"
 
-echo "== 素帛 $VERSION → R2 bucket「$BUCKET」（$BASE）"
+echo "== 素帛 $VERSION → R2 bucket「${BUCKET}」（${BASE}）"
 echo "应用内更新：${KEYS[*]}"
 for i in ${DIRECT[@]+"${!DIRECT[@]}"}; do echo "安装包：$(basename "${DIRECT[$i]}")${ALIAS[$i]:+ → ${ALIAS[$i]}}"; done
 # 线上清单的版本不比这次旧才往下走，免得手滑把旧版本发成最新
 ONLINE="$(curl -fsS --max-time 15 "$BASE/latest.json" 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).version)}catch{}})' || true)"
 [ -n "$ONLINE" ] && echo "线上当前版本：$ONLINE"
 if [ -n "$ONLINE" ] && [ "$ONLINE" != "$VERSION" ] && [ "$(printf '%s\n%s\n' "$ONLINE" "$VERSION" | sort -V | tail -1)" = "$ONLINE" ]; then
-  echo "线上已是 $ONLINE，比要发的 $VERSION 新。先改 tauri.conf.json 的版本号重新打包" >&2
+  echo "线上已是 ${ONLINE}，比要发的 $VERSION 新。先改 tauri.conf.json 的版本号重新打包" >&2
   exit 1
 fi
 if [ $DRY = 1 ]; then
@@ -113,4 +113,4 @@ for i in ${DIRECT[@]+"${!DIRECT[@]}"}; do
 done
 put "$MANIFEST" latest.json "public, max-age=300" application/json
 rm -rf "$(dirname "$MANIFEST")"
-echo "== 已发布 $VERSION：$BASE/latest.json"
+echo "== 已发布 ${VERSION}：$BASE/latest.json"

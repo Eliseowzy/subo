@@ -50,7 +50,7 @@ if [ "${1:-}" = "windows" ]; then
     case "$a" in
       lite) LITE=1 ;;
       offline) OFFLINE=1 ;;
-      *) echo "不认识的参数：$a（可选 lite、offline）" >&2; exit 2 ;;
+      *) echo "不认识的参数：${a}（可选 lite、offline）" >&2; exit 2 ;;
     esac
   done
   # 只给这一次构建改配置：tauri.conf.json 是各平台共用的，macOS、Linux 的包另有内置 TeX
@@ -97,13 +97,13 @@ if [ "${1:-}" = "bundle" ] && [ "$(uname -s)" = Darwin ]; then
       rustup target list --installed 2>/dev/null | grep -qx "$TARGET" || {
         echo "没装 Intel 的 Rust 目标：rustup target add $TARGET" >&2; exit 1; }
       [ -d "$TL" ] || {
-        echo "没有 desktop/$TL。先运行 SUBO_ARCH=x86_64 scripts/texlive-trim.sh <TeX Live 根目录> desktop/$TL" >&2; exit 1; } ;;
+        echo "没有 desktop/${TL}。先运行 SUBO_ARCH=x86_64 scripts/texlive-trim.sh <TeX Live 根目录> desktop/$TL" >&2; exit 1; } ;;
     *) echo "不认识的参数：$2（macOS 上可选 x64）" >&2; exit 2 ;;
   esac
   npx tauri build --bundles app ${TARGET:+--target "$TARGET"} -- --profile "$PROFILE"
   APP="$BUILD/bundle/macos/Subo.app"
   if [ -d "$TL" ]; then
-    echo "== 内置 TeX Live（desktop/$TL）"
+    echo "== 内置 TeX Live（desktop/${TL}）"
     ditto "$TL" "$APP/Contents/Resources/texlive"
     # 本机用 desktop/texlive 跑过 tlmgr（bundled-smoke.sh 补装宏包）会留下软件源 tlpdb 缓存（约 20 MB），不进包
     rm -f "$APP"/Contents/Resources/texlive/tlpkg/texlive.tlpdb.main.*
@@ -126,7 +126,7 @@ if [ "${1:-}" = "bundle" ] && [ "$(uname -s)" = Darwin ]; then
       echo "用 security find-identity -v -p codesigning 看有哪些，填引号里的整串名字（含括号里的团队 ID）或前面的指纹" >&2
       exit 1
     }
-    echo "== Developer ID 签名：$ID（证书 $HASH）"
+    echo "== Developer ID 签名：${ID}（证书 ${HASH}）"
     ID="$HASH"
     # 公证要求包里每个 Mach-O 都带 hardened runtime 和时间戳，--deep 不管资源目录里的程序，逐个签，
     # 由里往外，最后签 .app 本身
@@ -171,7 +171,7 @@ if [ "${1:-}" = "bundle" ] && [ "$(uname -s)" = Darwin ]; then
     status="$(xcrun notarytool info "$sid" --keychain-profile "$NOTARY" --output-format json \
       | sed -n 's/.*"status":"\([^"]*\)".*/\1/p')"
     if [ "$status" != Accepted ]; then
-      echo "公证没通过（$status）。看原因：xcrun notarytool log $sid --keychain-profile $NOTARY" >&2
+      echo "公证没通过（${status}）。看原因：xcrun notarytool log $sid --keychain-profile $NOTARY" >&2
       exit 1
     fi
     # 刚通过时票据可能还没同步到苹果的票据服务器，钉票报 Record not found（Error 65），等一会儿再钉
@@ -207,7 +207,7 @@ if [ "${1:-}" = "bundle" ] && [ "$(uname -s)" = Darwin ]; then
     COPYFILE_DISABLE=1 tar -czf "$TGZ" -C "$(dirname "$APP")" Subo.app
     npx tauri signer sign -f "$UPKEY" -p "${SUBO_UPDATER_KEY_PASSWORD:-}" --app-version "$VERSION" "$TGZ" >/dev/null
   elif [ -n "$NOTARY" ]; then
-    echo "提示：没有更新签名私钥（$UPKEY），这次不出应用内更新包" >&2
+    echo "提示：没有更新签名私钥（${UPKEY}），这次不出应用内更新包" >&2
   fi
 
   echo "== 制作 dmg"
@@ -300,7 +300,7 @@ if [ "${1:-}" = "bundle" ]; then
   TOOL="${APPIMAGETOOL:-$(command -v appimagetool || true)}"
   for img in "$OUT"/appimage/*.AppImage; do
     [ -e "$img" ] || continue
-    [ -n "$TOOL" ] || { echo "找不到 appimagetool，无法把 TeX Live 放进 $img（设 APPIMAGETOOL）" >&2; exit 1; }
+    [ -n "$TOOL" ] || { echo "找不到 appimagetool，无法把 TeX Live 放进 ${img}（设 APPIMAGETOOL）" >&2; exit 1; }
     echo "== 内置 TeX Live → $img"
     rm -rf "$STAGE/squashfs-root"
     # 不挂 FUSE，直接解开；CI 容器里没有 FUSE

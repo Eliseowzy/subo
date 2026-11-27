@@ -1,6 +1,6 @@
 [package]
 name = "subo-desktop"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 license = "Apache-2.0"
 description = "Subo 桌面壳：在自己进程里起本地服务，窗口指向它"

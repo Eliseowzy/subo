@@ -421,7 +421,8 @@ agent 直接改磁盘文件也可以（服务会通过 `stat` 被前端发现）
 | 方法 路径 | 请求 | 返回 / 说明 |
 | --- | --- | --- |
 | `POST /api/p/:id/build?wait=1` | | 等编完返回结果（见上表）；等待上限是编译超时 + 10 分钟，超了 504 `build.waitTimeout` |
-| `POST /api/p/:id/build` | | 202 `{queued}`，结果走事件流；没有 `.tex` 时 400 `build.noTex` |
+| `POST /api/p/:id/build` | | 202 `{queued}`，结果走事件流；可选 `?file=<相对路径>`（若为独立主 `.tex` 则同步切换并记住主文件）；没有 `.tex` 时 400 `build.noTex` |
+| `PUT /api/p/:id/entry` | `{entry}` | 手动指定项目主 `.tex`（传 `null` 恢复自动探测），返回 `{entry}` |
 | `GET /api/p/:id/jobs` | | `{running, jobs:[{jobId, ok, entry, pdf}]}`，由新到旧 |
 | `GET /api/p/:id/pdf/:job` | | PDF；没有则 404 `pdf.none` |
 | `GET /api/p/:id/log/:job` | | 编译日志纯文本 + `[ok=…]` |

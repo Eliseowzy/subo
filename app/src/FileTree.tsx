@@ -41,6 +41,8 @@ type Props = {
   /** 文件操作做完：from 是改名 / 删除前的路径（新建、副本为 null），to 是新路径（删除为 null）。
    *  上层据此刷新目录，打开着的文件跟着换 */
   onFsChange?: (from: string | null, to: string | null) => void;
+  /** 将指定 `.tex` 设为主文件（右键菜单）；只读项目不传 */
+  onSetEntry?: (path: string) => void;
 };
 
 /** 文件名的字数上限：多数文件系统是 255 */
@@ -130,6 +132,7 @@ export default function FileTree({
   onExportSnapshot,
   onBeforeFs,
   onFsChange,
+  onSetEntry,
 }: Props) {
   useLocale();
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
@@ -214,8 +217,15 @@ export default function FileTree({
   const fileItems = (path: string, dir: boolean): MenuEntry[] => {
     const name = baseName(path);
     const here = dir ? path : parentOf(path);
+    const canSetEntry = !dir && !locked && !!onSetEntry && /\.tex$/i.test(path) && path !== entry;
     return [
-      ...(dir ? [] : [{ label: t("tree.fileMenu.open"), run: () => onOpen(path) }, SEP]),
+      ...(dir
+        ? []
+        : [
+            { label: t("tree.fileMenu.open"), run: () => onOpen(path) },
+            ...(canSetEntry ? [{ icon: "play" as const, label: t("tree.fileMenu.setEntry"), run: () => onSetEntry(path) }] : []),
+            SEP,
+          ]),
       ...(locked
         ? []
         : [

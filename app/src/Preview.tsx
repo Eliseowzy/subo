@@ -584,7 +584,9 @@ export default function Preview({ url, label, hidden, busy, notice, empty, mark,
   return (
     <div className="preview" hidden={hidden} onKeyDown={onKey}>
       <div className="pane-bar">
-        <span className="pane-title">{label ?? t("preview.label")}</span>
+        <span className="pane-title" title={label ?? t("preview.label")}>
+          <span>{label ?? t("preview.label")}</span>
+        </span>
         {doc && (
           <span className="pdf-tools">
             <button

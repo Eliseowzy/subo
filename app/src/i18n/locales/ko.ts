@@ -286,6 +286,8 @@ export default defineLocale({
       fileMenu: {
         label: "파일 작업",
         open: "열기",
+        setEntry: "주 파일로 설정",
+        entrySet: "“{name}”을(를) 주 파일로 설정했습니다",
         newFile: "새 파일",
         newFolder: "새 폴더",
         rename: "이름 바꾸기",
@@ -674,6 +676,7 @@ export default defineLocale({
     },
     preview: {
       label: "PDF 미리보기",
+      labelFile: "PDF 미리보기 · {file}",
       empty: "표시할 내용 없음",
       zoomIn: "확대",
       zoomOut: "축소",
@@ -1402,6 +1405,10 @@ export default defineLocale({
       build: {
         waitTimeout: "빌드 결과를 기다리다 시간이 초과되었습니다",
         noTex: "프로젝트에서 .tex 파일을 찾지 못했습니다",
+      },
+      entry: {
+        notTex: ".tex 파일만 주 파일로 설정할 수 있습니다",
+        save: "주 파일 설정 저장 실패: {detail}",
       },
       job: {
         notFound: "그런 빌드가 없습니다",

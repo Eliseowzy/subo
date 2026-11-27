@@ -287,6 +287,8 @@ export default defineLocale({
       fileMenu: {
         label: "檔案操作",
         open: "開啟",
+        setEntry: "設為主檔案",
+        entrySet: "已將「{name}」設為主檔案",
         newFile: "新增檔案",
         newFolder: "新增資料夾",
         rename: "重新命名",
@@ -673,6 +675,7 @@ export default defineLocale({
     },
     preview: {
       label: "PDF 預覽",
+      labelFile: "PDF 預覽 · {file}",
       empty: "沒有可顯示的內容",
       zoomIn: "放大",
       zoomOut: "縮小",
@@ -1405,6 +1408,10 @@ export default defineLocale({
       build: {
         waitTimeout: "等待編譯結果逾時",
         noTex: "專案裡沒有找到 .tex 檔案",
+      },
+      entry: {
+        notTex: "只有 .tex 檔案才能設為主檔案",
+        save: "儲存主檔案設定失敗：{detail}",
       },
       job: {
         notFound: "沒有該任務",

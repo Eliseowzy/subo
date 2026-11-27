@@ -270,9 +270,9 @@ fn build_fix_prompt(input: &AssistIn, pre: &Preamble, engine: &str, base: Option
 }
 
 /// 项目入口的导言区；读不出来就当没有
-fn preamble_of(root: &FsPath) -> Preamble {
-    project::entry(root)
-        .and_then(|e| project::resolve(root, &e).ok())
+fn preamble_of(root: &FsPath, entry: Option<&str>) -> Preamble {
+    entry
+        .and_then(|e| project::resolve(root, e).ok())
         .and_then(|p| fs::read_to_string(p).ok())
         .map(|t| scan_preamble(&t))
         .unwrap_or_default()
@@ -288,8 +288,13 @@ pub async fn assist(State(s): State<Shared>, Path(id): Path<String>, Json(input)
     if let Err(f) = project::resolve(&q.root, &input.file) {
         return f.status(StatusCode::BAD_REQUEST);
     }
-    let pre = preamble_of(&q.root);
-    let engine = project::entry(&q.root).map(|e| s.engine_for(&q, &e).0.to_string()).unwrap_or_else(|| s.engine.clone());
+    let entry = if project::is_standalone_root(&q.root, &input.file) {
+        Some(project::normalize_rel(&input.file))
+    } else {
+        s.entry_of(&q)
+    };
+    let pre = preamble_of(&q.root, entry.as_deref());
+    let engine = entry.as_deref().map(|e| s.engine_for(&q, e).0.to_string()).unwrap_or_else(|| s.engine.clone());
     let base = if input.kind == "fix" { lastgood::source(&q.root, &input.file) } else { None };
     let prompt = match build_prompt(&input, &pre, &engine, base.as_deref()) {
         Ok(p) => p,
@@ -356,7 +361,12 @@ async fn shadow(s: &Shared, id: &str, file: &str, text: String, diag: bool) -> R
         return Err(r);
     }
     let target = project::resolve(&q.root, file).map_err(|f| f.status(StatusCode::BAD_REQUEST))?;
-    let Some(entry) = project::entry(&q.root) else {
+    let entry = if project::is_standalone_root(&q.root, file) {
+        Some(project::normalize_rel(file))
+    } else {
+        s.entry_of(&q)
+    };
+    let Some(entry) = entry else {
         return Err(Fail::new("build.noTex", "项目里没有找到 .tex 文件").status(StatusCode::BAD_REQUEST));
     };
     let rel: Vec<String> = match target.strip_prefix(&q.root) {

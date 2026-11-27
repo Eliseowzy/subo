@@ -288,6 +288,8 @@ export default {
       fileMenu: {
         label: "文件操作",
         open: "打开",
+        setEntry: "设为主文件",
+        entrySet: "已将「{name}」设为主文件",
         newFile: "新建文件",
         newFolder: "新建文件夹",
         rename: "重命名",
@@ -674,6 +676,7 @@ export default {
     },
     preview: {
       label: "PDF 预览",
+      labelFile: "PDF 预览 · {file}",
       empty: "没有可显示的内容",
       zoomIn: "放大",
       zoomOut: "缩小",
@@ -1406,6 +1409,10 @@ export default {
       build: {
         waitTimeout: "等编译结果超时",
         noTex: "项目里没有找到 .tex 文件",
+      },
+      entry: {
+        notTex: "只有 .tex 文件才能设为主文件",
+        save: "保存主文件设置失败：{detail}",
       },
       job: {
         notFound: "没有该任务",

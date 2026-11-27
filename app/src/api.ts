@@ -913,7 +913,17 @@ export function projectApi(id: string) {
     /** 附件原样读取（图片、字体、PDF） */
     rawUrl: (path: string) => `${base}/raw?path=${encodeURIComponent(path)}&t=${Date.now()}`,
 
-    build: () => fetch(`${base}/build`, { method: "POST" }).then((r) => ok<{ queued: boolean }>(r)),
+    /** 触发编译；file 为用户当前打开的文件，若是独立主文档后端会自动跟进主文件 */
+    build: (file?: string) =>
+      fetch(`${base}/build${file ? `?file=${encodeURIComponent(file)}` : ""}`, { method: "POST" }).then((r) => ok<{ queued: boolean }>(r)),
+
+    /** 手动设定主文件入口（传 null 恢复自动探测） */
+    setEntry: (entry: string | null) =>
+      fetch(`${base}/entry`, {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ entry }),
+      }).then((r) => ok<{ entry: string | null }>(r)),
 
     engine: () => fetch(`${base}/engine`).then((r) => ok<EngineInfo>(r)),
 

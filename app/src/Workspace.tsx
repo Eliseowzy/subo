@@ -79,6 +79,11 @@ export default function Workspace({ id, template, onHome, onSwitch }: Props) {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   /** 正在显示的预览出自哪次编译；SyncTeX 要对着同一次的数据查 */
   const [shown, setShown] = useState<string | null>(null);
+  /** 正在显示的预览对应的主 .tex（多文档项目在预览顶栏标出，免得改着 A 看着 B 的 PDF 浑然不觉） */
+  const [shownEntry, setShownEntry] = useState<string | null>(null);
+  const jobEntries = useRef(new Map<string, string>());
+  const entryRef = useRef<string | null>(null);
+  entryRef.current = project?.entry ?? null;
   const [mark, setMark] = useState<(Spot & { n: number }) | null>(null);
   const [job, setJob] = useState<Job>("idle");
   const [save, setSave] = useState<Save>("saved");
@@ -506,6 +511,13 @@ export default function Workspace({ id, template, onHome, onSwitch }: Props) {
       if (ev.projectId !== id) return;
       switch (ev.type) {
         case "job.started":
+          jobEntries.current.set(ev.jobId, ev.entry);
+          if (entryRef.current !== ev.entry) {
+            entryRef.current = ev.entry;
+            setProject((p) => (p ? { ...p, entry: ev.entry } : p));
+            refreshSymbols();
+            setBuilt((n) => n + 1);
+          }
           setJob("running");
           setProgress(NO_PROGRESS);
           setLog("");
@@ -542,6 +554,7 @@ export default function Workspace({ id, template, onHome, onSwitch }: Props) {
           refreshSymbols();
           setPdfUrl(api.pdfUrl(ev.jobId));
           setShown(ev.jobId);
+          setShownEntry(jobEntries.current.get(ev.jobId) ?? null);
           break;
         case "job.failed":
           setJob("failed");
@@ -576,17 +589,21 @@ export default function Workspace({ id, template, onHome, onSwitch }: Props) {
     return () => es.close();
   }, [id, api, refreshSymbols]);
 
-  const buildNow = useCallback(async () => {
-    try {
-      await flush();
-    } catch {
-      return; // 保存失败已经提示过；不能拿旧稿去编
-    }
-    await api.build().catch(toastError);
-  }, [api, flush]);
+  const buildNow = useCallback(
+    async (file?: string) => {
+      try {
+        await flush();
+      } catch {
+        return; // 保存失败已经提示过；不能拿旧稿去编
+      }
+      await api.build(file).catch(toastError);
+    },
+    [api, flush]
+  );
 
-  /** 按钮、⌘↵、菜单发起的编译：正在编时不再发。后端会把重复请求排成「编完再整编一遍」，
-   *  连点就白白多编一轮。换引擎、装好宏包等改了条件的仍走 buildNow，照常补编 */
+  /** 按钮、⌘↵、菜单发起的编译：带上当前打开的文件（若是独立主文档后端自动跟进），
+   *  正在编时不再发。后端会把重复请求排成「编完再整编一遍」，连点就白白多编一轮。
+   *  换引擎、装好宏包等改了条件的仍走 buildNow()，照常补编原主文件 */
   const running = job === "running";
   const requesting = useRef(false);
   const runningRef = useRef(running);
@@ -595,11 +612,33 @@ export default function Workspace({ id, template, onHome, onSwitch }: Props) {
     if (runningRef.current || requesting.current) return;
     requesting.current = true;
     try {
-      await buildNow();
+      await buildNow(activeRef.current ?? undefined);
     } finally {
       requesting.current = false;
     }
   }, [buildNow]);
+
+  /** 文件树右键手动指定主文件：保存后立刻编译这份入口 */
+  const setEntry = useCallback(
+    async (path: string) => {
+      try {
+        await flush();
+      } catch {
+        return;
+      }
+      try {
+        const r = await api.setEntry(path);
+        setProject((p) => (p ? { ...p, entry: r.entry } : p));
+        refreshSymbols();
+        setBuilt((n) => n + 1);
+        toast(t("tree.fileMenu.entrySet", { name: path }), "success");
+        void api.build().catch(toastError);
+      } catch (e) {
+        toastError(e);
+      }
+    },
+    [api, flush, refreshSymbols]
+  );
 
   /** SyncTeX 正向：光标所在行 → 预览；.md 没有 PDF 可查，定位到 Markdown 预览 */
   const syncForward = useCallback(() => {
@@ -775,43 +814,43 @@ export default function Workspace({ id, template, onHome, onSwitch }: Props) {
           <Mark busy={job === "running"} alert={job === "failed" || missing.length + fixes.length > 0 || !!wanted || !!stale} />
           {t("brand.primary")} {t("brand.secondary") && <span className="brand-en">{t("brand.secondary")}</span>}
         </button>
-        <div className="crumbs" title={project?.root}>
-          <span className="crumb-sep" aria-hidden="true">/</span>
+        <div className="crumbs" data-tauri-drag-region title={project?.root}>
+          <span className="crumb-sep" data-tauri-drag-region aria-hidden="true">/</span>
           {locked ? (
-            <span className="crumb-name">
-              <span>{name}</span>
-              <span className="crumb-tag">{t(preview ? "workspace.preview.tag" : "workspace.archived.tag")}</span>
+            <span className="crumb-name" data-tauri-drag-region>
+              <span data-tauri-drag-region>{name}</span>
+              <span className="crumb-tag" data-tauri-drag-region>{t(preview ? "workspace.preview.tag" : "workspace.archived.tag")}</span>
             </span>
           ) : (
             <>
               <ProjectSwitch id={id} name={name} onSwitch={onSwitch} />
               {project?.folder && (
-                <span className="crumb-tag" title={t("workspace.folderTitle", { path: project.root })}>
+                <span className="crumb-tag" data-tauri-drag-region title={t("workspace.folderTitle", { path: project.root })}>
                   {t("home.tagFolder")}
                 </span>
               )}
             </>
           )}
         </div>
-        <div className="actions">
+        <div className="actions" data-tauri-drag-region>
           {job === "failed" ? (
             <button className={`status ${job}`} onClick={openProblems} title={t("workspace.viewIssues")}>
               <span className="status-dot" />
               {statusText}
             </button>
           ) : (
-            <span className={`status ${job}`}>
-              {job === "running" ? <Spinner size={11} /> : <span className="status-dot" />}
+            <span className={`status ${job}`} data-tauri-drag-region>
+              {job === "running" ? <Spinner size={11} /> : <span className="status-dot" data-tauri-drag-region />}
               {statusText}
-              {progressText && <span className="meta">{progressText}</span>}
-              {job === "done" && meta && <span className="meta">{duration(meta.ms)}</span>}
+              {progressText && <span className="meta" data-tauri-drag-region>{progressText}</span>}
+              {job === "done" && meta && <span className="meta" data-tauri-drag-region>{duration(meta.ms)}</span>}
             </span>
           )}
           {/* 读屏播报编译状态：失败时上面换成了按钮，播报区得一直挂着才念得出来 */}
           <span className="sr-only" role="status">
             {statusText}
           </span>
-          <span className="topbar-sep" />
+          <span className="topbar-sep" data-tauri-drag-region />
           <button
             className={`btn btn-ghost btn-sm${showLog ? " on" : ""}`}
             onClick={() => setShowLog((s) => !s)}
@@ -907,6 +946,7 @@ export default function Workspace({ id, template, onHome, onSwitch }: Props) {
           onExportSnapshot={locked ? undefined : () => void exportSnapshot()}
           onBeforeFs={flush}
           onFsChange={onFsChange}
+          onSetEntry={locked ? undefined : (p) => void setEntry(p)}
         />
         <Gutter
           title={t("workspace.gutterTree")}
@@ -1042,6 +1082,11 @@ export default function Workspace({ id, template, onHome, onSwitch }: Props) {
         <Preview
           hidden={showMd}
           url={pdfUrl}
+          label={
+            shownEntry && (project?.files.filter((f) => !f.dir && /\.tex$/i.test(f.path)).length ?? 0) > 1
+              ? t("preview.labelFile", { file: shownEntry.replace(/\.tex$/i, ".pdf") })
+              : undefined
+          }
           mark={mark}
           onSync={syncBack}
           busy={job === "running"}

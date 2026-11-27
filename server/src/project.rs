@@ -109,7 +109,127 @@ fn walk(root: &Path, dir: &Path, out: &mut Vec<Entry>, depth: usize) {
     }
 }
 
-/// 探测入口文件：优先 main.tex，其次顶层含 `\documentclass` 的 .tex，最后任意顶层 .tex。
+/// 规范化项目内相对路径：去掉前导 `/`/`\`/`./`，分隔符统一为 `/`。
+pub fn normalize_rel(rel: &str) -> String {
+    let mut s = rel.replace('\\', "/");
+    while let Some(rest) = s.strip_prefix('/') {
+        s = rest.to_string();
+    }
+    while let Some(rest) = s.strip_prefix("./") {
+        s = rest.to_string();
+    }
+    s
+}
+
+/// 扩展名是否为 `.tex`（不区分大小写）
+pub fn is_tex(rel: &str) -> bool {
+    Path::new(rel).extension().is_some_and(|e| e.eq_ignore_ascii_case("tex"))
+}
+
+/// 从 TeX 源码里提取 `\documentclass[...]{name}` 的文档类名。
+/// 忽略 `%` 注释行，支持 `[...]` 可选参数跨行。
+fn document_class(src: &str) -> Option<String> {
+    // 去掉每行未转义的 `%` 注释，保留换行作为空白分隔
+    let mut cleaned = String::with_capacity(src.len().min(8192));
+    for line in src.lines() {
+        let mut escaped = false;
+        let mut end = line.len();
+        for (i, ch) in line.char_indices() {
+            if escaped {
+                escaped = false;
+                continue;
+            }
+            if ch == '\\' {
+                escaped = true;
+            } else if ch == '%' {
+                end = i;
+                break;
+            }
+        }
+        cleaned.push_str(&line[..end]);
+        cleaned.push('\n');
+        // 导言区通常在文件前部，最多扫前 32 KB 足够
+        if cleaned.len() >= 32 * 1024 {
+            break;
+        }
+    }
+
+    let bytes = cleaned.as_bytes();
+    let needle = b"\\documentclass";
+    let mut pos = 0;
+    while let Some(rel) = cleaned[pos..].find("\\documentclass") {
+        let idx = pos + rel;
+        let after = idx + needle.len();
+        pos = after;
+        // 确认是完整命令名，而不是 `\documentclassfoo`
+        if bytes.get(after).is_some_and(|b| b.is_ascii_alphabetic()) {
+            continue;
+        }
+        let mut cur = cleaned[after..].trim_start();
+        // 跳过可选参数 `[...]`
+        if let Some(rest) = cur.strip_prefix('[') {
+            let mut depth = 1usize;
+            let mut found = None;
+            let mut esc = false;
+            for (i, ch) in rest.char_indices() {
+                if esc {
+                    esc = false;
+                    continue;
+                }
+                match ch {
+                    '\\' => esc = true,
+                    '[' => depth += 1,
+                    ']' => {
+                        depth -= 1;
+                        if depth == 0 {
+                            found = Some(&rest[i + 1..]);
+                            break;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+            cur = found?.trim_start();
+        }
+        // 读取 `{class_name}`
+        let rest = cur.strip_prefix('{')?;
+        let close = rest.find('}')?;
+        let name = rest[..close].trim();
+        if !name.is_empty() {
+            return Some(name.to_string());
+        }
+    }
+    None
+}
+
+/// 这个文件是不是可独立编译的主文档：存在的 `.tex` 文件、声明了 `\documentclass`，
+/// 且不是 `subfiles` / `standalone` 这类从属子文档。
+pub fn is_standalone_root(root: &Path, rel: &str) -> bool {
+    let rel = normalize_rel(rel);
+    if !is_tex(&rel) {
+        return false;
+    }
+    let Ok(path) = resolve(root, &rel) else { return false };
+    if !path.is_file() {
+        return false;
+    }
+    let Ok(src) = fs::read_to_string(&path) else { return false };
+    document_class(&src).is_some_and(|cls| !matches!(cls.as_str(), "subfiles" | "standalone"))
+}
+
+/// 优先采用用户指定（或上次跟随记住）的入口：只要文件仍存在且合法就用它；否则退回自动探测。
+pub fn entry_with_preferred(root: &Path, preferred: Option<&str>) -> Option<String> {
+    if let Some(raw) = preferred {
+        let rel = normalize_rel(raw);
+        if is_tex(&rel) && resolve(root, &rel).is_ok_and(|p| p.is_file()) {
+            return Some(rel);
+        }
+    }
+    entry(root)
+}
+
+/// 探测入口文件：优先 main.tex，其次 arXiv 00README.json 声明，再其次顶层独立主文档（含 `\documentclass`
+/// 且优先排除 `subfiles`/`standalone`），最后任意含 `\documentclass` 或第一个顶层 .tex。
 /// 导入的项目入口常常不叫 main.tex（resume.tex、thesis.tex），章节文件又不能当入口。
 pub fn entry(root: &Path) -> Option<String> {
     if root.join("main.tex").is_file() {
@@ -123,15 +243,17 @@ pub fn entry(root: &Path) -> Option<String> {
         .flatten()
         .filter(|e| e.path().is_file())
         .map(|e| e.file_name().to_string_lossy().to_string())
-        .filter(|n| n.ends_with(".tex"))
+        .filter(|n| is_tex(n))
         .collect();
     tex.sort();
-    let is_root_doc = |n: &String| {
-        fs::read_to_string(root.join(n))
-            .map(|s| s.lines().any(|l| l.trim_start().starts_with("\\documentclass")))
-            .unwrap_or(false)
-    };
-    tex.iter().find(|n| is_root_doc(n)).or(tex.first()).cloned()
+    let doc_class = |n: &String| fs::read_to_string(root.join(n)).ok().and_then(|s| document_class(&s));
+    let classes: Vec<(&String, Option<String>)> = tex.iter().map(|n| (n, doc_class(n))).collect();
+    classes
+        .iter()
+        .find(|(_, c)| c.as_deref().is_some_and(|cls| !matches!(cls, "subfiles" | "standalone")))
+        .or_else(|| classes.iter().find(|(_, c)| c.is_some()))
+        .map(|(n, _)| (*n).clone())
+        .or_else(|| tex.first().cloned())
 }
 
 /// arXiv 源码包里的 `00README.json` 写明了主文件：
@@ -160,5 +282,54 @@ mod tests {
         for ok in ["main.tex", "auxiliary.tex", "com10.txt", "com0", "context.tex", "a.aux", ".latexmkrc"] {
             assert!(!reserved_on_windows(ok), "{ok}");
         }
+    }
+
+    #[test]
+    fn document_class_detection() {
+        assert_eq!(document_class("\\documentclass{resume}\n"), Some("resume".into()));
+        assert_eq!(
+            document_class("% \\documentclass{commented}\n\\documentclass[12pt, a4paper]{article}\n"),
+            Some("article".into())
+        );
+        assert_eq!(
+            document_class("\\documentclass[\n  twocolumn,\n  10pt\n]{IEEEtran}\n"),
+            Some("IEEEtran".into())
+        );
+        assert_eq!(document_class("\\documentclass[../main.tex]{subfiles}\n"), Some("subfiles".into()));
+        assert_eq!(document_class("\\documentclass[tikz]{standalone}\n"), Some("standalone".into()));
+        assert_eq!(document_class("\\section{Intro}\n"), None);
+    }
+
+    #[test]
+    fn standalone_root_and_preferred_entry() {
+        let dir = std::env::temp_dir().join(format!("subo-project-entry-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(dir.join("sub")).unwrap();
+        let root = dunce::canonicalize(&dir).unwrap();
+
+        fs::write(root.join("a_fig.tex"), "\\documentclass{standalone}\n\\begin{document}fig\\end{document}\n").unwrap();
+        fs::write(root.join("ch1.tex"), "\\documentclass[main.tex]{subfiles}\n\\begin{document}ch\\end{document}\n").unwrap();
+        fs::write(root.join("intro.tex"), "\\section{Intro}\n").unwrap();
+        fs::write(root.join("resume_en.tex"), "\\documentclass{resume}\n\\begin{document}en\\end{document}\n").unwrap();
+        fs::write(root.join("resume_harness.tex"), "\\documentclass{resume}\n\\begin{document}h\\end{document}\n").unwrap();
+        fs::write(root.join("sub/custom.tex"), "\\documentclass{article}\n\\begin{document}s\\end{document}\n").unwrap();
+
+        assert!(!is_standalone_root(&root, "a_fig.tex"));
+        assert!(!is_standalone_root(&root, "ch1.tex"));
+        assert!(!is_standalone_root(&root, "intro.tex"));
+        assert!(is_standalone_root(&root, "resume_en.tex"));
+        assert!(is_standalone_root(&root, "resume_harness.tex"));
+        assert!(is_standalone_root(&root, "sub/custom.tex"));
+
+        // 自动探测应跳过 standalone/subfiles，选 resume_en.tex
+        assert_eq!(entry(&root).as_deref(), Some("resume_en.tex"));
+        // 指定偏好优先（含子目录、甚至 standalone）
+        assert_eq!(entry_with_preferred(&root, Some("resume_harness.tex")).as_deref(), Some("resume_harness.tex"));
+        assert_eq!(entry_with_preferred(&root, Some("sub/custom.tex")).as_deref(), Some("sub/custom.tex"));
+        assert_eq!(entry_with_preferred(&root, Some("a_fig.tex")).as_deref(), Some("a_fig.tex"));
+        // 偏好文件不存在时退回自动探测
+        assert_eq!(entry_with_preferred(&root, Some("deleted.tex")).as_deref(), Some("resume_en.tex"));
+
+        let _ = fs::remove_dir_all(&dir);
     }
 }

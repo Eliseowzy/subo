@@ -292,6 +292,8 @@ export default defineLocale({
       fileMenu: {
         label: "File actions",
         open: "Open",
+        setEntry: "Set as Main File",
+        entrySet: "Set “{name}” as main file",
         newFile: "New File",
         newFolder: "New Folder",
         rename: "Rename",
@@ -728,6 +730,7 @@ export default defineLocale({
     },
     preview: {
       label: "PDF preview",
+      labelFile: "PDF preview · {file}",
       empty: "Nothing to show",
       zoomIn: "Zoom in",
       zoomOut: "Zoom out",
@@ -1471,6 +1474,10 @@ export default defineLocale({
       build: {
         waitTimeout: "Timed out waiting for the build result",
         noTex: "No .tex file found in the project",
+      },
+      entry: {
+        notTex: "Only .tex files can be set as the main file",
+        save: "Couldn't save main file setting: {detail}",
       },
       job: {
         notFound: "No such build",

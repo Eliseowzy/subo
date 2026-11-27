@@ -273,9 +273,47 @@ impl AppState {
 
     /// Subo 自己建的项目（空白、模板）建好就记下引擎，不走探测：多数按 xelatex 写，日文模板用 lualatex
     fn pin_program(&self, id: &str, program: &str) {
-        let prefs = projprefs::ProjectPrefs { engine: Some(program.into()) };
-        if let Err(e) = projprefs::save(&self.projects, id, &prefs) {
+        if let Err(e) = projprefs::update(&self.projects, id, |p| p.engine = Some(program.into())) {
             eprintln!("[engine] 记录项目 {id} 的引擎失败：{e}");
+        }
+    }
+
+    /// 项目的入口 `.tex`：优先采用已记住的（文件还在时），否则自动探测；模板预览只读，始终自动探测
+    pub(crate) fn entry_of(&self, q: &Quire) -> Option<String> {
+        let saved = if q.preview { None } else { projprefs::load(&self.projects, &q.id).entry };
+        project::entry_with_preferred(&q.root, saved.as_deref())
+    }
+
+    fn entry_for_id(&self, id: &str, root: &std::path::Path) -> Option<String> {
+        let saved = projprefs::load(&self.projects, id).entry;
+        project::entry_with_preferred(root, saved.as_deref())
+    }
+
+    /// 文件或目录改名后，若记住的主文件落在其中，跟着换到新路径
+    fn sync_entry_on_rename(&self, id: &str, from: &str, to: &str) {
+        let from = project::normalize_rel(from);
+        let to = project::normalize_rel(to);
+        let Some(cur) = projprefs::load(&self.projects, id).entry else { return };
+        let cur = project::normalize_rel(&cur);
+        let next = if cur == from {
+            Some(to)
+        } else {
+            cur.strip_prefix(&format!("{from}/")).map(|rest| format!("{to}/{rest}"))
+        };
+        if let Some(next) = next {
+            let _ = projprefs::update(&self.projects, id, |p| {
+                p.entry = if project::is_tex(&next) { Some(next) } else { None };
+            });
+        }
+    }
+
+    /// 文件或目录删除后，若记住的主文件在其中，清除偏好以回退到自动探测
+    fn sync_entry_on_delete(&self, id: &str, path: &str) {
+        let path = project::normalize_rel(path);
+        let Some(cur) = projprefs::load(&self.projects, id).entry else { return };
+        let cur = project::normalize_rel(&cur);
+        if cur == path || cur.starts_with(&format!("{path}/")) {
+            let _ = projprefs::update(&self.projects, id, |p| p.entry = None);
         }
     }
 
@@ -556,6 +594,7 @@ pub async fn serve(opts: Options, listener: tokio::net::TcpListener) -> std::io:
         .route("/api/p/:id/jobs", get(list_jobs))
         .route("/api/p/:id/compat", post(apply_compat))
         .route("/api/p/:id/engine", get(get_engine).put(put_engine))
+        .route("/api/p/:id/entry", axum::routing::put(put_entry))
         .route("/api/p/:id/pdf/:job", get(pdf))
         .route("/api/p/:id/export/:job", post(export_pdf))
         .route("/api/p/:id/log/:job", get(log))
@@ -698,6 +737,11 @@ async fn list_projects(State(s): State<Shared>) -> impl IntoResponse {
         })
         .collect();
     out.extend(library::list(&s.home()));
+    for sum in &mut out {
+        if !sum.missing {
+            sum.entry = s.entry_for_id(&sum.id, std::path::Path::new(&sum.path));
+        }
+    }
     // 找不到的文件夹沉底，其余按最近修改
     out.sort_by(|a, b| a.missing.cmp(&b.missing).then(b.modified.cmp(&a.modified)));
     Json(out)
@@ -998,7 +1042,7 @@ async fn project_tree(State(s): State<Shared>, Path(id): Path<String>) -> Respon
         "preview": q.preview,
         "archived": s.archived(&q),
         "root": q.root.to_string_lossy(),
-        "entry": project::entry(&q.root),
+        "entry": s.entry_of(&q),
         "files": project::tree(&q.root),
     }))
     .into_response()
@@ -1054,9 +1098,10 @@ async fn file_stat(
 async fn project_symbols(State(s): State<Shared>, Path(id): Path<String>) -> Response {
     let Some(q) = s.quire(&id) else { return not_found() };
     let root = q.root.clone();
+    let entry = s.entry_of(&q);
     let res = tokio::task::spawn_blocking(move || {
         let files: Vec<String> = project::tree(&root).into_iter().filter(|e| !e.dir).map(|e| e.path).collect();
-        symbols::collect(&root, project::entry(&root).as_deref(), &files)
+        symbols::collect(&root, entry.as_deref(), &files)
     })
     .await;
     match res {
@@ -1236,7 +1281,13 @@ async fn fs_new(State(s): State<Shared>, Path(id): Path<String>, Json(b): Json<F
 }
 
 async fn fs_rename(State(s): State<Shared>, Path(id): Path<String>, Json(b): Json<FsBody>) -> Response {
-    fs_op(s, id, move |root| files::rename(root, &b.from, &b.to).map(|()| json!({ "path": b.to }))).await
+    let (s2, id2, from, to) = (s.clone(), id.clone(), b.from.clone(), b.to.clone());
+    fs_op(s, id, move |root| {
+        files::rename(root, &b.from, &b.to)?;
+        s2.sync_entry_on_rename(&id2, &from, &to);
+        Ok(json!({ "path": b.to }))
+    })
+    .await
 }
 
 async fn fs_duplicate(State(s): State<Shared>, Path(id): Path<String>, Json(b): Json<FsBody>) -> Response {
@@ -1245,7 +1296,13 @@ async fn fs_duplicate(State(s): State<Shared>, Path(id): Path<String>, Json(b): 
 }
 
 async fn fs_delete(State(s): State<Shared>, Path(id): Path<String>, Json(b): Json<FsBody>) -> Response {
-    fs_op(s, id, move |root| files::trash(root, &b.path).map(|()| json!({ "ok": true }))).await
+    let (s2, id2, path) = (s.clone(), id.clone(), b.path.clone());
+    fs_op(s, id, move |root| {
+        files::trash(root, &b.path)?;
+        s2.sync_entry_on_delete(&id2, &path);
+        Ok(json!({ "ok": true }))
+    })
+    .await
 }
 
 #[derive(Serialize)]
@@ -1256,13 +1313,26 @@ struct BuildAccepted {
 
 /// 默认立即返回 202，结果走 `/api/events`。`?wait=1` 一直等到这次编译收尾，直接返回结果
 /// （脚本、agent 用，不必自己订阅事件流），见 [`await_job`]。
+/// `?file=<相对路径>`（前端用户主动编译时带上当前打开的文件）：若是独立主文档（含 `\documentclass`
+/// 且非 `subfiles`/`standalone`），自动将该文件记为当前主文件并编译；否则继续沿用原主文件。
 async fn build(
     State(s): State<Shared>,
     Path(id): Path<String>,
     Query(qs): Query<HashMap<String, String>>,
 ) -> Response {
     let Some(q) = s.quire(&id) else { return not_found() };
-    if project::entry(&q.root).is_none() {
+    if let Some(raw) = qs.get("file").filter(|f| !f.trim().is_empty()) {
+        if !q.preview && !s.archived(&q) {
+            let norm = project::normalize_rel(raw);
+            if project::is_standalone_root(&q.root, &norm) {
+                let cur = projprefs::load(&s.projects, &q.id).entry;
+                if cur.as_deref() != Some(norm.as_str()) {
+                    let _ = projprefs::update(&s.projects, &q.id, |p| p.entry = Some(norm));
+                }
+            }
+        }
+    }
+    if s.entry_of(&q).is_none() {
         return Fail::new("build.noTex", "项目里没有找到 .tex 文件").status(StatusCode::BAD_REQUEST);
     }
     let wait = qs.get("wait").is_some_and(|v| !matches!(v.as_str(), "0" | "false"));
@@ -1427,7 +1497,7 @@ fn run_job(s: &AppState, q: &Quire) {
         .unwrap_or(0);
     let jid = format!("j{nanos}");
     // 入口在排队期间可能被删掉或改名，开跑时再取一次
-    let Some(entry) = project::entry(&q.root) else {
+    let Some(entry) = s.entry_of(q) else {
         s.emit(
             q,
             json!({"type": "job.failed", "jobId": jid, "engine": s.engine, "ms": 0,
@@ -1670,7 +1740,7 @@ async fn get_engine(State(s): State<Shared>, Path(id): Path<String>) -> Response
     use engine::program::{Reason, Source};
     let Some(q) = s.quire(&id) else { return not_found() };
     let mode = projprefs::load(&s.projects, &q.id).engine.unwrap_or_else(|| "auto".into());
-    let entry = project::entry(&q.root);
+    let entry = s.entry_of(&q);
     let Some(c) = entry.as_deref().and_then(|e| s.program_for(&q, e)) else {
         return Json(json!({ "mode": mode, "program": s.engine, "source": "fixed", "switchable": false })).into_response();
     };
@@ -1716,9 +1786,45 @@ async fn put_engine(State(s): State<Shared>, Path(id): Path<String>, Json(body):
         m if engine::program::Program::parse(m).is_some_and(|p| p.name() == m) => Some(body.mode.clone()),
         _ => return Fail::new("engine.unknown", "不认识的引擎").with("engine", body.mode.as_str()).status(StatusCode::BAD_REQUEST),
     };
-    match projprefs::save(&s.projects, &q.id, &projprefs::ProjectPrefs { engine }) {
-        Ok(()) => get_engine(State(s), Path(id)).await,
+    match projprefs::update(&s.projects, &q.id, |p| p.engine = engine) {
+        Ok(_) => get_engine(State(s), Path(id)).await,
         Err(e) => Fail::new("engine.save", format!("保存失败：{e}")).status(StatusCode::INTERNAL_SERVER_ERROR),
+    }
+}
+
+#[derive(Deserialize)]
+struct EntryBody {
+    /// 项目内 `.tex` 相对路径；传 `null` 恢复自动探测
+    entry: Option<String>,
+}
+
+async fn put_entry(State(s): State<Shared>, Path(id): Path<String>, Json(body): Json<EntryBody>) -> Response {
+    if preview_template(&id).is_some() {
+        return preview_read_only();
+    }
+    let Some(q) = s.quire(&id) else { return not_found() };
+    if let Some(r) = s.read_only(&q) {
+        return r;
+    }
+    let next = match body.entry.as_deref().map(str::trim).filter(|v| !v.is_empty()) {
+        Some(raw) => {
+            let rel = project::normalize_rel(raw);
+            if !project::is_tex(&rel) {
+                return Fail::new("entry.notTex", "只有 .tex 文件才能设为主文件").status(StatusCode::BAD_REQUEST);
+            }
+            match project::resolve(&q.root, &rel) {
+                Ok(p) if p.is_file() => Some(rel),
+                Ok(_) => return Fail::new("file.notFound", format!("文件不存在：{rel}")).with("path", rel).status(StatusCode::NOT_FOUND),
+                Err(e) => return e.status(StatusCode::BAD_REQUEST),
+            }
+        }
+        None => None,
+    };
+    match projprefs::update(&s.projects, &q.id, |p| p.entry = next) {
+        Ok(_) => Json(json!({ "entry": s.entry_of(&q) })).into_response(),
+        Err(e) => Fail::new("entry.save", format!("保存主文件设置失败：{e}"))
+            .detail(e)
+            .status(StatusCode::INTERNAL_SERVER_ERROR),
     }
 }
 
@@ -2691,10 +2797,17 @@ async fn export_pdf(State(s): State<Shared>, Path((id, job)): Path<(String, Stri
         return r;
     }
     let job = job_id(&q, &job);
-    let Some(src) = q.jobs.lock().unwrap().map.get(&job).and_then(|j| j.pdf.clone()) else {
+    let Some((src, job_entry)) = q
+        .jobs
+        .lock()
+        .unwrap()
+        .map
+        .get(&job)
+        .and_then(|j| j.pdf.clone().map(|p| (p, j.entry.clone())))
+    else {
         return Fail::new("pdf.none", "没有可用的 PDF").status(StatusCode::NOT_FOUND);
     };
-    let Some(entry) = project::entry(&q.root) else {
+    let Some(entry) = (!job_entry.is_empty()).then_some(job_entry).or_else(|| s.entry_of(&q)) else {
         return Fail::new("build.noTex", "项目里没有找到 .tex 文件").status(StatusCode::BAD_REQUEST);
     };
     let name = export_name(&entry);
